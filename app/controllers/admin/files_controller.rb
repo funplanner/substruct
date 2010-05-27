@@ -8,7 +8,7 @@ class Admin::FilesController < Admin::BaseController
     @title = "List of user uploaded files"
     
     if params[:sort] == 'name' then
-      sort = "filename ASC"
+      sort = "upload_file_name ASC"
     else
       sort = "created_on DESC"
     end
@@ -20,7 +20,7 @@ class Admin::FilesController < Admin::BaseController
       @files = UserUpload.paginate(
         :order => sort,
         :page => params[:page],
-        :conditions => ["type = ? and thumbnail is NULL", @viewing_by],
+        :conditions => ["type = ?", @viewing_by],
         :per_page => 30
       )
     else

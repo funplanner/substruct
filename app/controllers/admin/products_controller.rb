@@ -97,11 +97,11 @@ class Admin::ProductsController < Admin::BaseController
           if i[:image_data] && !i[:image_data].blank?
             new_image = Image.new
             logger.info i[:image_data].inspect
-            new_image.uploaded_data = i[:image_data]
+            new_image.upload = i[:image_data]
             if new_image.save
               @product.images << new_image
             else
-              image_errors.push(new_image.filename)
+              image_errors.push(new_image.upload.original_filename)
             end
           end
         end
@@ -115,11 +115,11 @@ class Admin::ProductsController < Admin::BaseController
             new_download = Download.new
             logger.info i[:download_data].inspect
           
-            new_download.uploaded_data = i[:download_data]
+            new_download.upload = i[:download_data]
             if new_download.save
-              new_download.product = @product
+              @product.downloads << new_download
             else
-              download_errors.push(new_download.filename)
+              download_errors.push(new_download.upload.original_filename)
             end
           end
         end

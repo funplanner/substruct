@@ -153,7 +153,6 @@ class Admin::ContentNodesController < Admin::BaseController
     def set_recent_uploads
       @recent_uploads = UserUpload.find(
         :all,
-        :conditions => "thumbnail IS NULL",
         :order => 'created_on DESC',
         :limit => 9
       )
@@ -173,7 +172,7 @@ class Admin::ContentNodesController < Admin::BaseController
           if new_file.save!
             files_saved += 1
           end
-          @content_node.content.gsub!("[file#{files_saved}]", new_file.public_filename)
+          @content_node.content.gsub!("[file#{files_saved}]", new_file.upload.url)
         end
       end
       if files_saved > 0

@@ -2,7 +2,7 @@ class Product < Item
   # Conditions that the product is in stock, or available 
   # and just out of stock.
   CONDITIONS_AVAILABLE = %Q/
-      CURRENT_DATE() >= DATE(items.date_available)
+      CURRENT_DATE >= DATE(items.date_available)
       AND items.is_discontinued = 0
       OR (items.is_discontinued = 1 AND (items.quantity > 0 OR items.variation_quantity > 0))
   /

@@ -50,7 +50,10 @@ namespace :substruct do
       
       # Check requirements
       require 'rubygems' unless Object.const_defined?(:Gem)
-      %w(RedCloth fastercsv mime-types mini_magick ezcrypto).each do |gem_name|
+#      %w(RedCloth fastercsv mime-types ezcrypto).each do |gem_name|
+#        check_installed_gem(gem_name)
+#      end
+      %w(RedCloth fastercsv ezcrypto).each do |gem_name|
         check_installed_gem(gem_name)
       end
       
@@ -81,14 +84,21 @@ namespace :substruct do
       puts "Initializing database..."
       
       # Move our schema file into place so we can load it.
-      schema_file = File.join(RAILS_ROOT, 'vendor/plugins/substruct/db/schema.rb')
-      FileUtils.cp(schema_file, File.join(RAILS_ROOT, 'db'))
-    
+      #schema_file = File.join(RAILS_ROOT, 'vendor/plugins/substruct/db/schema.rb')
+      #FileUtils.cp(schema_file, File.join(RAILS_ROOT, 'db'))
+      #    
+      #%w(
+      #  environment 
+      #  db:drop
+      #  db:create
+      #  db:schema:load
+      #  substruct:db:load_authority_data
+      #  tmp:create
+      #).each { |t| Rake::Task[t].execute task_args}
+      
       %w(
-        environment 
-        db:drop
-        db:create
-        db:schema:load
+        environment
+        db:migrate:reset 
         substruct:db:load_authority_data
         tmp:create
       ).each { |t| Rake::Task[t].execute task_args}

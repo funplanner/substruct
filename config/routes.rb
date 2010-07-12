@@ -1,4 +1,4 @@
-ActionController::Routing::Routes.draw do |map|
+Rails.application.routes.draw do |map|
   # default
   map.connect '',
     :controller => 'content_nodes',

@@ -3,4 +3,4 @@
 
 # load up all the required files we need...
 require 'substruct'
-
+require 'substruct_deprecated'

@@ -25,7 +25,7 @@ module Substruct
 	# For linking to sections (using subdirs)
   def link_to_section(label, options = {})
 		$ctrlop = options[:controller]
-    if request.request_uri == options[:controller]
+    if request.fullpath == options[:controller]
       link_to(label, options, { :class => "active"})
     else
       link_to(label, options)

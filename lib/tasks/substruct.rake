@@ -57,7 +57,7 @@ namespace :substruct do
         check_installed_gem(gem_name)
       end
       
-      mkdir_p File.join(RAILS_ROOT, 'log')
+      mkdir_p File.join(Rails.root, 'log')
       
       puts "Checking requirements..."
     
@@ -84,8 +84,8 @@ namespace :substruct do
       puts "Initializing database..."
       
       # Move our schema file into place so we can load it.
-      #schema_file = File.join(RAILS_ROOT, 'vendor/plugins/substruct/db/schema.rb')
-      #FileUtils.cp(schema_file, File.join(RAILS_ROOT, 'db'))
+      #schema_file = File.join(Rails.root, 'vendor/plugins/substruct/db/schema.rb')
+      #FileUtils.cp(schema_file, File.join(Rails.root, 'db'))
       #    
       #%w(
       #  environment 
@@ -108,7 +108,7 @@ namespace :substruct do
       # because loading from bootstrap doesn't do it.
       #
       # Grab current schema version from the migration scripts.
-      schema_files = Dir.glob(File.join(RAILS_ROOT, 'vendor/plugins/substruct/db/migrate', '*'))
+      schema_files = Dir.glob(File.join(Rails.root, 'vendor/plugins/substruct/db/migrate', '*'))
       schema_version = File.basename(schema_files.sort.last).to_i
       ActiveRecord::Base.connection.execute(%Q\
         INSERT INTO plugin_schema_info
@@ -140,8 +140,8 @@ namespace :substruct do
     \
     task :dump_authority_data => :environment do |task_args|
 
-      bootstrap_fixture_path = File.join(RAILS_ROOT, SUBSTRUCT_BOOTSTRAP_PATH)
-      fixture_dump_path = File.join(RAILS_ROOT, 'test/fixtures')
+      bootstrap_fixture_path = File.join(Rails.root, SUBSTRUCT_BOOTSTRAP_PATH)
+      fixture_dump_path = File.join(Rails.root, 'test/fixtures')
       
       FileUtils.rm Dir.glob(File.join(fixture_dump_path, "*.yml"))
       
@@ -173,7 +173,7 @@ namespace :substruct do
       puts "Removing all sessions..."
       Session.destroy_all
       puts "Loading default data..."
-      bootstrap_fixture_path = File.join(RAILS_ROOT, SUBSTRUCT_BOOTSTRAP_PATH)
+      bootstrap_fixture_path = File.join(Rails.root, SUBSTRUCT_BOOTSTRAP_PATH)
       Dir.glob(File.join(bootstrap_fixture_path, '*.{yml,csv}')).each do |file|
         Fixtures.create_fixtures(bootstrap_fixture_path, File.basename(file, '.*'))
       end
@@ -197,7 +197,7 @@ namespace :substruct do
       raise "Please specify a Substruct VERSION" if version.nil?
       tag = "rel_#{version}"
       release_name = "substruct_#{tag.gsub('.', '-')}"
-      tmp_dir = File.join(RAILS_ROOT, 'tmp', release_name)
+      tmp_dir = File.join(Rails.root, 'tmp', release_name)
       # clean up any tmp releases
       FileUtils.rm_rf(Dir.glob(File.join(tmp_dir, '*.gz')))
       FileUtils.rm_rf(tmp_dir)
@@ -251,7 +251,7 @@ namespace :substruct do
       
       # Doesn't seem to work...
       #puts "Uploading to Google Code..."
-      #`googlecode-upload.py -s 'Substruct #{version}' -p 'substruct' --config-dir=#{File.join(RAILS_ROOT, 'vendor')} #{rel_archive}`
+      #`googlecode-upload.py -s 'Substruct #{version}' -p 'substruct' --config-dir=#{File.join(Rails.root, 'vendor')} #{rel_archive}`
       
       puts "Done."
     end
@@ -277,7 +277,7 @@ namespace :substruct do
       \
       task :clean do
         puts "Deleting any previous coverage report generated..."
-        rm_rf "\"#{RAILS_ROOT}/test/coverage/plugins/substruct/all\""
+        rm_rf "\"#{Rails.root}/test/coverage/plugins/substruct/all\""
       end
     end
   
@@ -311,7 +311,7 @@ namespace :substruct do
       rcov_options = "-T --exclude-only \"#{exclusion_regexps}\""
       
       # Other params.
-      rcov_output = "-o \"#{RAILS_ROOT}/test/coverage/plugins/substruct/all\""
+      rcov_output = "-o \"#{Rails.root}/test/coverage/plugins/substruct/all\""
       rcov_lib = "-Ilib:test"
       rcov_tests = FileList['vendor/plugins/substruct/test/{unit,integration,functional}/**/*_test.rb']
       rcov_tests = rcov_tests.collect {|x| '"' + x + '"'}.to_s
@@ -326,7 +326,7 @@ namespace :substruct do
   
   # Annotations =======================================================
 
-  require "#{RAILS_ROOT}/vendor/plugins/substruct/lib/substruct_annotation_extractor.rb"
+  require "#{Rails.root}/vendor/plugins/substruct/lib/substruct_annotation_extractor.rb"
   
   desc "Enumerate all annotations"
   task :notes do

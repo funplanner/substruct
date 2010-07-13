@@ -9,6 +9,8 @@ class OrdersMailer < ActionMailer::Base
 		@from       = Preference.find_by_name('mail_username').value
     @sent_on    = Time.now
     @headers    = {}
+    
+    # mail(:to=>@recipients, :bcc=>@bcc, :from=>@from, :subject=>@subject, :body=>@body)
   end
 
   def reset_password(customer)
@@ -19,6 +21,8 @@ class OrdersMailer < ActionMailer::Base
 		@from       = Preference.find_by_name('mail_username').value
     @sent_on    = Time.now
     @headers    = {}
+    
+    # mail(:to=>@recipients, :bcc=>@bcc, :from=>@from, :subject=>@subject, :body=>@body)
   end
 
   def failed(order)
@@ -28,6 +32,8 @@ class OrdersMailer < ActionMailer::Base
 		@from       = Preference.find_by_name('mail_username').value
     @sent_on    = Time.now
     @headers    = {}
+    
+    # mail(:to=>@recipients, :bcc=>@bcc, :from=>@from, :subject=>@subject, :body=>@body)
   end
   
 end

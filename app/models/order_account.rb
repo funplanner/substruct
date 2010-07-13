@@ -44,7 +44,8 @@ class OrderAccount < ActiveRecord::Base
   validates_numericality_of :expiration_month, :expiration_year
 
   # Make sure expiration date is ok.
-  def validate
+  validate :do_validate
+  def do_validate
     today = DateTime.now
     begin
       if (today.month > self.expiration_month && today.year >= self.expiration_year)

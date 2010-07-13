@@ -27,7 +27,7 @@ class Admin::FilesController < Admin::BaseController
       @files = UserUpload.paginate(
         :order => sort,
         :page => params[:page],
-        :conditions => "thumbnail is NULL",
+        # :conditions => "thumbnail is NULL", ## FIXME: Maybe reintroduce this as :conditions=>"type != 'Image' ? ##
         :per_page => 30
       )
     end

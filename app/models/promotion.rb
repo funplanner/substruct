@@ -23,7 +23,8 @@ class Promotion < ActiveRecord::Base
   
   # Makes sure if 'buy n get one free' discount type that
   # a product is selected.
-  def validate
+  validate :do_validate
+  def do_validate
     if self.discount_type == 2 && self.item_id.nil?
       errors.add(:item_id, "Please add an item for the 'Buy [n] get 1 free' promotion")
     end

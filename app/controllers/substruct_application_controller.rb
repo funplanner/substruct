@@ -57,7 +57,7 @@ module SubstructApplicationController
   def ssl_required
     if ENV['RAILS_ENV'] == "production" && Substruct.override_ssl_production_mode == false
       if !request.ssl?
-        redirect_to "https://" + request.host + request.request_uri
+        redirect_to "https://" + request.host + request.fullpath
         flash.keep
         return false
       end

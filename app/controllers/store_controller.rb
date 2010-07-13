@@ -19,7 +19,7 @@ class StoreController < ApplicationController
     ]
   
 
-  if Preference.find_by_name('store_test_transactions').is_true?
+  if Preference.find_or_create_by_name(:name=>'store_test_transactions', :value=>0).is_true?
     ActiveMerchant::Billing::Base.integration_mode = :test 
   else
     ActiveMerchant::Billing::Base.integration_mode = :production

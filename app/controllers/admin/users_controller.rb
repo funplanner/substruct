@@ -90,7 +90,7 @@ class Admin::UsersController < Admin::BaseController
       end
     end
 
-    directory = File.join(RAILS_ROOT, "public/system/customers")
+    directory = File.join(Rails.root, "public/system/customers")
     file_name = Time.now.strftime("Customer_list-%m_%d_%Y_%H-%M")
     file = "#{file_name}.csv"
     save_to = "#{directory}/#{file}"

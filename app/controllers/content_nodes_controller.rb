@@ -11,7 +11,7 @@ class ContentNodesController < ApplicationController
   def show_by_name
     @content_node = ContentNode.find(:first, :conditions => ["name = ?", params[:name]])
     if !@content_node then
-      render :file => "#{RAILS_ROOT}/public/404.html", :layout => false, :status => 404
+      render :file => "#{Rails.root}/public/404.html", :layout => false, :status => 404
       return
     end
     # Set a title
@@ -51,7 +51,7 @@ class ContentNodesController < ApplicationController
     # Find section, if no section 404...
     @section = Section.find_by_name(params[:section_name])
     if !@section then
-      render :file => "#{RAILS_ROOT}/public/404.html", :layout => false, :status => 404
+      render :file => "#{Rails.root}/public/404.html", :layout => false, :status => 404
       return
     end
     @title = "Blog entries for #{@section.name}"

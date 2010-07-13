@@ -11,7 +11,8 @@ class User < ActiveRecord::Base
   validates_length_of :login, :within => 3..40
 	validates_presence_of :login
 	
-	def validate
+  validate :do_validate
+  def do_validate
 	  if (self.new_record? || (!self.password.blank? && !self.password_confirmation.blank?))  
 	    if (5 > self.password.length || 40 < self.password.length)
         errors.add(:password, " must be between 5 and 40 characters.")

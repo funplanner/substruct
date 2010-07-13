@@ -25,15 +25,13 @@ class UserUpload < ActiveRecord::Base
     self.upload.original_filename
   end
 
-#  
-#  def relative_path
-#    #self.upload.original_filename[self.upload.original_filename.rindex('/public/system')+7, self.upload.original_filename.size]
-#    self.upload.original_filename
-#  end
-#  
-#  def filename_without_ext
-#    self.upload.original_filename[0, self.upload.original_filename.rindex('.')]
-#  end
+  def relative_path
+    self.upload.original_filename
+  end
+
+  def filename_without_ext
+    self.upload.original_filename[0, self.upload.original_filename.rindex('.')]
+  end
 
   # use this to make a new user upload when you don't know whether it should
   # be an image or an asset.  Can't use UserUpload.new since UserUpload doesn't invoke 
@@ -47,5 +45,14 @@ class UserUpload < ActiveRecord::Base
     user_upload.upload = file_data
     user_upload
   end
+  
+  def request=(*args)
+    puts "BORK BORK BORK 001"
+  end
+
+  def params=(*args)
+    puts "BORK BORK BORK 002"
+  end
+
 
 end

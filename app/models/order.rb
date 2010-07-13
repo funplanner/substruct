@@ -242,8 +242,14 @@ class Order < ActiveRecord::Base
 
 	# Gets a CSV string that represents an order list.
 	def self.get_csv_for_orders(order_list)
-    require 'fastercsv'
-    csv_string = FasterCSV.generate do |csv|
+    if (RUBY_VERSION.to_f >= 1.9)
+      require 'csv'
+      csv_source = CSV
+    else
+      require 'fastercsv' 
+      csv_source = FasterCSV
+    end
+    csv_string = csv_source.generate do |csv|
       # Do header generation 1st
       csv << [
         "OrderNumber", "Company", "ShippingType", "Date", 
@@ -734,7 +740,7 @@ class Order < ActiveRecord::Base
   def deliver_receipt
     @content_node = ContentNode.find(:first, :conditions => ["name = ?", 'OrderReceipt'])
     if @content_node
-      OrdersMailer.deliver_receipt(self, @content_node.content)
+      OrdersMailer.receipt(self, @content_node.content).deliver
     else
       logger.error("The system didn't found a content node record named \"OrderReceipt\", this record " +
       "is used in the e-mail body. The e-mail deliver cannot proceed.")
@@ -743,7 +749,7 @@ class Order < ActiveRecord::Base
 
   # If we're going to define deliver_receipt here, why not wrap deliver_failed as well?
   def deliver_failed
-    OrdersMailer.deliver_failed(self)
+    OrdersMailer.failed(self).deliver
   end
 
   # Is a discount present?

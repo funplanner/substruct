@@ -49,7 +49,7 @@
 					<%
 						@image = item.product.images[0]
 						if @image then
-                                                       image_url = @image.public_filename(:thumb)
+                                                       image_url = @image.upload.path(:thumb)
 							if image_url then
 					-%>
 							<%= image_tag image_url, :align => 'left', :style => 'margin:5px;' %>

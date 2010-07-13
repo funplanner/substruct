@@ -225,7 +225,7 @@ class CustomersController < ApplicationController
     
     # Ensure it belongs to the passed in order.
     if file && order.downloads.include?(file)
-      send_file(file.full_filename)
+      send_file(file.upload.path) ## FIXME: This *ONLY* works for Paperclip w/ File Repo - what about Amazon S3? 
     else
       render(:file => 'public/404.html', :status => 404) and return
     end
@@ -250,7 +250,7 @@ class CustomersController < ApplicationController
     # store current uri in  the session.
     # we can return to this location by calling return_location
     def store_location
-      session[:return_to] = request.request_uri
+      session[:return_to] = request.fullpath
     end
 	
 	  # Move to the last store_location call or to the passed default one

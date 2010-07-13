@@ -130,7 +130,7 @@ class OrderUser < ActiveRecord::Base
   #
   def reset_password 
     self.update_attribute('password', OrderUser.generate_password())
-    email = OrdersMailer.deliver_reset_password(self)
+    email = OrdersMailer.reset_password(self).deliver
   end
   
   # Adds an item to this customer's wishlist

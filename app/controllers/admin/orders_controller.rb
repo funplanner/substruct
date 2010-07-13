@@ -268,7 +268,7 @@ class Admin::OrdersController < Admin::BaseController
         content = Order.get_csv_for_orders(@orders)
     end
     
-    directory = File.join(RAILS_ROOT, "public/system/order_files")
+    directory = File.join(Rails.root, "public/system/order_files")
     file_name = Time.now.strftime("%m_%d_%Y_%H-%M")
     file = "#{file_name}.#{params[:format]}"
     save_to = "#{directory}/#{file}"

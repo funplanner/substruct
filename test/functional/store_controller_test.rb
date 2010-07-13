@@ -1,6 +1,6 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
-class StoreControllerTest < ActionController::TestCase
+class StoreControllerTest < ActionController::IntegrationTest # ActionController::TestCase
   fixtures :all
 
   # TODO: Appears that the cart and cart_container partials arent used, 

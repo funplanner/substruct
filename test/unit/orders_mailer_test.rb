@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class OrdersMailerTest < ActiveSupport::TestCase
   fixtures :orders, :order_line_items, :order_addresses, :order_users, :order_shipping_types, :items

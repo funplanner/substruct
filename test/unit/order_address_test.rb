@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class OrderAddressTest < ActiveSupport::TestCase
   fixtures :users
@@ -58,24 +58,24 @@ class OrderAddressTest < ActiveSupport::TestCase
     an_address = OrderAddress.new
     
     assert !an_address.valid?
-    #assert an_address.errors.invalid?(:order_user_id), "Should have an error in order_user_id"
-    #assert an_address.errors.invalid?(:country_id), "Should have an error in country_id"
-    assert an_address.errors.invalid?(:zip), "Should have an error in zip"
-    assert an_address.errors.invalid?(:telephone), "Should have an error in telephone"
-    assert an_address.errors.invalid?(:first_name), "Should have an error in first_name"
-    assert an_address.errors.invalid?(:last_name), "Should have an error in last_name"
-    assert an_address.errors.invalid?(:address), "Should have an error in address"
+    #assert an_address.errors[:order_user_id].any?, "Should have an error in order_user_id"
+    #assert an_address.errors[:country_id].any?, "Should have an error in country_id"
+    assert an_address.errors[:zip].any?, "Should have an error in zip"
+    assert an_address.errors[:telephone].any?, "Should have an error in telephone"
+    assert an_address.errors[:first_name].any?, "Should have an error in first_name"
+    assert an_address.errors[:last_name].any?, "Should have an error in last_name"
+    assert an_address.errors[:address].any?, "Should have an error in address"
     
     # An address must have the fields filled.
-    assert_equal "#{ERROR_EMPTY} If you live in a country that doesn't have postal codes please enter '00000'.", an_address.errors.on(:zip)
-    assert_equal ERROR_EMPTY, an_address.errors.on(:telephone)
-    assert_equal ERROR_EMPTY, an_address.errors.on(:first_name)
-    assert_equal ERROR_EMPTY, an_address.errors.on(:last_name)
-    assert_equal ERROR_EMPTY, an_address.errors.on(:address)
+    assert_equal ["#{ERROR_EMPTY} If you live in a country that doesn't have postal codes please enter '00000'."], an_address.errors[:zip]
+    assert_equal [ERROR_EMPTY], an_address.errors[:telephone]
+    assert_equal [ERROR_EMPTY], an_address.errors[:first_name]
+    assert_equal [ERROR_EMPTY], an_address.errors[:last_name]
+    assert_equal [ERROR_EMPTY], an_address.errors[:address]
 
     an_address.address = "P.O. BOX"
     assert !an_address.valid?
-    assert_equal "Sorry, we don't ship to P.O. boxes", an_address.errors.on(:address)
+    assert_equal ["Sorry, we don't ship to P.O. boxes"], an_address.errors[:address]
     
 #    TODO: The address is being saved even when not associated with an user or a country.
 #    an_address.first_name = "Colonel"

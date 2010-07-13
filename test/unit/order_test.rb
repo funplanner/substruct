@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class OrderTest < ActiveSupport::TestCase
   fixtures :all
@@ -78,9 +78,9 @@ class OrderTest < ActiveSupport::TestCase
 #    # TODO: By now theres no way to make an order invalid, it accepts any blank values and saves it.
 #    an_order = Order.new
 #    assert !an_order.valid?
-#    assert an_order.errors.invalid?(:order_number)
+#    assert an_order.errors[:order_number].any?
 #    # An order must have a number.
-#    assert_equal "can't be blank", an_order.errors.on(:order_number)
+#    assert_equal ["can't be blank"], an_order.errors[:order_number]
 #    assert !an_order.save
   end
 

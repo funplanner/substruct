@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class OrderShippingTypeTest < ActiveSupport::TestCase
   fixtures(
@@ -52,9 +52,9 @@ class OrderShippingTypeTest < ActiveSupport::TestCase
 #    a_shipping_type = OrderShippingType.new
 #    a_shipping_type.price = ""
 #    assert !a_shipping_type.valid?
-#    assert a_shipping_type.errors.invalid?(:price)
+#    assert a_shipping_type.errors[:price].any?
 #    # A shipping type must have a price.
-#    assert_same_elements ["can't be blank", "is not a number"], a_shipping_type.errors.on(:price)
+#    assert_same_elements ["can't be blank", "is not a number"], a_shipping_type.errors[:price]
 #    assert !a_shipping_type.save
   end
 

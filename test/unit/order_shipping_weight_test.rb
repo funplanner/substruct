@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class OrderShippingWeightTest < ActiveSupport::TestCase
   fixtures :rights, :roles, :users
@@ -28,9 +28,9 @@ class OrderShippingWeightTest < ActiveSupport::TestCase
 #    a_shipping_weight.max_weight = 1.00
 #    a_shipping_weight.price = ""
 #    assert !a_shipping_weight.valid?
-#    assert a_shipping_weight.errors.invalid?(:price)
+#    assert a_shipping_weight.errors[:price].any?
 #    # A shipping weight must have a price.
-#    assert_same_elements ["can't be blank", "is not a number"], a_shipping_weight.errors.on(:price)
+#    assert_same_elements ["can't be blank", "is not a number"], a_shipping_weight.errors[:price]
 #    assert !a_shipping_weight.save
   end
   

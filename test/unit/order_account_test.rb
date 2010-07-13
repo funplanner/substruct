@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class OrderAccountTest < ActiveSupport::TestCase
   fixtures :order_accounts, :order_users
@@ -55,35 +55,35 @@ class OrderAccountTest < ActiveSupport::TestCase
     
     # An order account must have valid expiration month and year.
     assert !an_account.valid?
-    assert an_account.errors.invalid?(:expiration_month), "Should have an error in expiration_month"
-    assert an_account.errors.invalid?(:expiration_year), "Should have an error in expiration_year"
+    assert an_account.errors[:expiration_month].any?, "Should have an error in expiration_month"
+    assert an_account.errors[:expiration_year].any?, "Should have an error in expiration_year"
     
-    assert_same_elements ["is not a number", "Please enter a valid expiration date."], an_account.errors.on(:expiration_month)
-    assert_equal "is not a number", an_account.errors.on(:expiration_year)
+    assert_same_elements ["is not a number", "Please enter a valid expiration date."], an_account.errors[:expiration_month]
+    assert_equal ["is not a number"], an_account.errors[:expiration_year]
 
     an_account.expiration_month = 1.month.ago.month
     an_account.expiration_year = 1.year.ago.year
 
     assert !an_account.valid?
-    assert an_account.errors.invalid?(:expiration_month), "Should have an error in expiration_month"
+    assert an_account.errors[:expiration_month].any?, "Should have an error in expiration_month"
     
-    assert_equal "Please enter a valid expiration date.", an_account.errors.on(:expiration_month)
+    assert_equal ["Please enter a valid expiration date."], an_account.errors[:expiration_month]
 
     an_account.order_account_type_id = OrderAccount::TYPES['Credit Card']
     assert !an_account.valid?
-    assert an_account.errors.invalid?(:cc_number)
+    assert an_account.errors[:cc_number].any?
  
     # An account of type "Credit Card" must have a cc_number.
-    assert_equal ERROR_EMPTY, an_account.errors.on(:cc_number)
+    assert_equal [ERROR_EMPTY], an_account.errors[:cc_number]
  
     an_account.order_account_type_id = OrderAccount::TYPES['Checking']
     assert !an_account.valid?
-    assert an_account.errors.invalid?(:routing_number)
-    assert an_account.errors.invalid?(:account_number)
+    assert an_account.errors[:routing_number].any?
+    assert an_account.errors[:account_number].any?
  
     # An account of type "Checking" must have a routing_number and an account_number.
-    assert_equal ERROR_EMPTY, an_account.errors.on(:routing_number)
-    assert_equal ERROR_EMPTY, an_account.errors.on(:account_number)
+    assert_equal [ERROR_EMPTY], an_account.errors[:routing_number]
+    assert_equal [ERROR_EMPTY], an_account.errors[:account_number]
 
     assert !an_account.save
   end

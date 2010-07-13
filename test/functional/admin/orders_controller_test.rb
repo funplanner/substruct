@@ -1,6 +1,6 @@
-require File.dirname(__FILE__) + '/../../test_helper'
+require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 
-class Admin::OrdersControllerTest < ActionController::TestCase
+class Admin::OrdersControllerTest < ActionController::IntegrationTest # ActionController::TestCase
   fixtures :all
   
   # Test the index action.
@@ -406,7 +406,7 @@ class Admin::OrdersControllerTest < ActionController::TestCase
     assert_not_nil md
 
     # Assert something was generated and remove it.
-    file = File.join(RAILS_ROOT, "public/system/order_files", md[0])
+    file = File.join(Rails.root, "public/system/order_files", md[0])
     was_created = File.exist?(file)
     assert was_created
     if was_created
@@ -431,7 +431,7 @@ class Admin::OrdersControllerTest < ActionController::TestCase
     assert_not_nil md
 
     # Assert something was generated and remove it.
-    file = File.join(RAILS_ROOT, "public/system/order_files", md[0])
+    file = File.join(Rails.root, "public/system/order_files", md[0])
     was_created = File.exist?(file)
     assert was_created
     if was_created

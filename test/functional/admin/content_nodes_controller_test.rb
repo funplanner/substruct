@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../test_helper'
+require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 
 class Admin::ContentNodesControllerTest < ActionController::TestCase
   fixtures :rights, :roles, :users
@@ -178,7 +178,7 @@ class Admin::ContentNodesControllerTest < ActionController::TestCase
     assert_not_nil a_blog_post
 
     # Verify that the file is there.
-    an_user_upload = UserUpload.find_by_filename('shrub1.jpg')
+    an_user_upload = UserUpload.find_by_upload_file_name('shrub1.jpg')
     assert_not_nil an_user_upload 
 
     # We must erase the record and its files by hand, just calling destroy.

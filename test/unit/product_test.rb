@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class ProductTest < ActiveSupport::TestCase
   # If the model was inherited from another model, the fixtures must be the
@@ -66,16 +66,16 @@ class ProductTest < ActiveSupport::TestCase
   def test_should_not_create_invalid_product
     a_product = Item.new
     assert !a_product.valid?
-    assert a_product.errors.invalid?(:code)
-    assert a_product.errors.invalid?(:name)
+    assert a_product.errors[:code].any?
+    assert a_product.errors[:name].any?
     # A product must have a code and a name.
-    assert_equal "can't be blank", a_product.errors.on(:code)
-    assert_equal "can't be blank", a_product.errors.on(:name)
+    assert_equal ["can't be blank"], a_product.errors[:code]
+    assert_equal ["can't be blank"], a_product.errors[:name]
     a_product.code = "URANIUM"
     assert !a_product.valid?
-    assert a_product.errors.invalid?(:code)
+    assert a_product.errors[:code].any?
     # A product must have an unique code.
-    assert_equal "has already been taken", a_product.errors.on(:code)
+    assert_equal ["has already been taken"], a_product.errors[:code]
     assert !a_product.save
   end
 

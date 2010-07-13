@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class OrderUserTest < ActiveSupport::TestCase
   fixtures :order_users, :orders, :items
@@ -89,26 +89,26 @@ class OrderUserTest < ActiveSupport::TestCase
 
     # An order user must have an email address.
     assert !an_order_user.valid?
-    assert an_order_user.errors.invalid?(:email_address)
-    assert_same_elements ["Please fill in this field.", "Please enter a valid email address."], an_order_user.errors.on(:email_address)
+    assert an_order_user.errors[:email_address].any?
+    assert_same_elements ["Please fill in this field.", "Please enter a valid email address."], an_order_user.errors[:email_address]
 
     # An order user must have a valid email address.
     an_order_user.email_address = "arthur.dent"
     assert !an_order_user.valid?
-    assert an_order_user.errors.invalid?(:email_address)
-    assert_equal "Please enter a valid email address.", an_order_user.errors.on(:email_address)
+    assert an_order_user.errors[:email_address].any?
+    assert_equal ["Please enter a valid email address."], an_order_user.errors[:email_address]
 
     # An order user must have an unique email address.
     an_order_user.email_address = "santa.claus@whoknowswhere.com"
     assert !an_order_user.valid?
-    assert an_order_user.errors.invalid?(:email_address)
-    assert_equal "\n\t    This email address has already been taken in our system.<br/>\n\t    If you have already ordered with us, please login.\n\t  ", an_order_user.errors.on(:email_address)
+    assert an_order_user.errors[:email_address].any?
+    assert_equal ["\n\t    This email address has already been taken in our system.<br/>\n\t    If you have already ordered with us, please login.\n\t  "], an_order_user.errors[:email_address]
 
     # An order user must have an email address shorter than 255 characters.
     an_order_user.email_address = "my_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_very_email_address"
     assert !an_order_user.valid?
-    assert an_order_user.errors.invalid?(:email_address)
-    assert_same_elements ["Please enter a valid email address.", "is too long (maximum is 255 characters)"], an_order_user.errors.on(:email_address)
+    assert an_order_user.errors[:email_address].any?
+    assert_same_elements ["Please enter a valid email address.", "is too long (maximum is 255 characters)"], an_order_user.errors[:email_address]
 
     assert !an_order_user.save
   end

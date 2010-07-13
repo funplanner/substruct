@@ -1,6 +1,7 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
-class UserUploadTest < ActiveSupport::TestCase
+
+class UserUploadTest < ActionController::TestCase  
   fixtures :user_uploads
 
   # TODO: Get rid of this method if it will not be used.
@@ -8,8 +9,8 @@ class UserUploadTest < ActiveSupport::TestCase
   def test_should_return_names
     an_user_upload = user_uploads(:lightsaber_blue_upload)
 
-    assert_equal an_user_upload.relative_path, an_user_upload.filename
-    assert_equal an_user_upload.filename_without_ext, File.basename(an_user_upload.filename, File.extname(an_user_upload.filename))
+    assert_equal an_user_upload.relative_path, an_user_upload.upload_file_name
+    assert_equal an_user_upload.filename_without_ext, File.basename(an_user_upload.upload_file_name, File.extname(an_user_upload.upload_file_name))
   end
 
 

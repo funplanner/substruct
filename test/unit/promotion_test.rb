@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class PromotionTest < ActiveSupport::TestCase
   fixtures :items, :promotions
@@ -68,27 +68,27 @@ class PromotionTest < ActiveSupport::TestCase
   def test_should_not_create_invalid_promotion
     a_promotion = Promotion.new
     assert !a_promotion.valid?
-    assert a_promotion.errors.invalid?(:code)
-    assert a_promotion.errors.invalid?(:description)
+    assert a_promotion.errors[:code].any?
+    assert a_promotion.errors[:description].any?
     # It defaults to 0, so it will never happen.
-    # assert a_promotion.errors.invalid?(:discount_type)
+    # assert a_promotion.errors[:discount_type].any?
     # It defaults to 0.0, so it will never happen.
-    # assert a_promotion.errors.invalid?(:discount_amount)
+    # assert a_promotion.errors[:discount_amount].any?
     # A promotion must have a code, a description, a type and an amount.
-    assert_equal "can't be blank", a_promotion.errors.on(:code)
-    assert_equal "can't be blank", a_promotion.errors.on(:description)
+    assert_equal ["can't be blank"], a_promotion.errors[:code]
+    assert_equal ["can't be blank"], a_promotion.errors[:description]
 
     a_promotion.discount_type = 2
     # If the item_id is empty when discount_type is 2, it cannot be saved.
     assert !a_promotion.valid?
-    assert a_promotion.errors.invalid?(:item_id)
-    assert_equal "Please add an item for the 'Buy [n] get 1 free' promotion", a_promotion.errors.on(:item_id)
+    assert a_promotion.errors[:item_id].any?
+    assert_equal ["Please add an item for the 'Buy [n] get 1 free' promotion"], a_promotion.errors[:item_id]
     
     a_promotion.code = "PERCENT_REBATE"
     assert !a_promotion.valid?
-    assert a_promotion.errors.invalid?(:code)
+    assert a_promotion.errors[:code].any?
     # A promotion must have an unique code.
-    assert_equal "has already been taken", a_promotion.errors.on(:code)
+    assert_equal ["has already been taken"], a_promotion.errors[:code]
 
     assert !a_promotion.save
   end

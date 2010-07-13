@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class SectionTest < ActiveSupport::TestCase
   fixtures :sections, :content_nodes
@@ -42,14 +42,14 @@ class SectionTest < ActiveSupport::TestCase
   def test_should_not_create_invalid_section
     a_section = Section.new
     assert !a_section.valid?
-    assert a_section.errors.invalid?(:name)
+    assert a_section.errors[:name].any?
     # A section must have a name.
-    assert_equal "can't be blank", a_section.errors.on(:name)
+    assert_equal ["can't be blank"], a_section.errors[:name]
     a_section.name = "Junk Food News"
     assert !a_section.valid?
-    assert a_section.errors.invalid?(:name)
+    assert a_section.errors[:name].any?
     # A section must have an unique name.
-    assert_equal "has already been taken", a_section.errors.on(:name)
+    assert_equal ["has already been taken"], a_section.errors[:name]
     assert !a_section.save
   end
 

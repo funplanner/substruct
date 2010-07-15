@@ -12,7 +12,7 @@ class Preference < ActiveRecord::Base
   # other records (like country)
   CC_PROCESSORS = ['Authorize.net', 'PayPal IPN']
   MAIL_AUTH = ['none', 'plain', 'login', 'cram_md5']
-  validates_presence_of :name, :type
+  validates_presence_of :name
   validates_uniqueness_of :name
   
   # Can throw an error if these items aren't set.

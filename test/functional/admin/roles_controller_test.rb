@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 
 class Admin::RolesControllerTest < ActionController::TestCase
@@ -77,7 +80,7 @@ class Admin::RolesControllerTest < ActionController::TestCase
     assert_template 'edit'
 
     # Here we assert that the proper fields was marked.
-    assert_select "div.fieldWithErrors input#role_name"
+    assert_select "div.field_with_errors input#role_name"
   end
 
 
@@ -136,7 +139,7 @@ class Admin::RolesControllerTest < ActionController::TestCase
     assert_template 'edit'
 
     # Here we assert that the proper fields was marked.
-    assert_select "div.fieldWithErrors input#role_name"
+    assert_select "div.field_with_errors input#role_name"
   end
 
 

@@ -1,10 +1,12 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 class AccountsController < ApplicationController
   layout 'accounts'
   before_filter :ssl_required
 
   def login
-    case request.method
-      when :post
+    if request.post?
 	      if user = User.authenticate(params[:user_login], params[:user_password])
 	        session[:user] = user.id
 					flash['notice']  = "Login successful"

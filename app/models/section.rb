@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 # A section is an organizational unit for content nodes.
 #
 # Sections can be applied to pages or snippets, but really are

@@ -1,6 +1,9 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 
-class Admin::OrdersControllerTest < ActionController::IntegrationTest # ActionController::TestCase
+class Admin::OrdersControllerTest < ActionController::TestCase
   fixtures :all
   
   # Test the index action.
@@ -394,9 +397,7 @@ class Admin::OrdersControllerTest < ActionController::IntegrationTest # ActionCo
     # Call the download action.
     get :download, :format => "csv", :ids => ids_array
     assert_response :success
-
-    # Why not Content-Type?
-    assert_equal @response.headers['type'], "text/csv"
+    assert_equal @response.headers['Content-Type'], "text/csv"
     
     # Create a regular expression.
     re = %r{\d{2}_\d{2}_\d{4}_\d{2}-\d{2}[.]csv}
@@ -420,8 +421,7 @@ class Admin::OrdersControllerTest < ActionController::IntegrationTest # ActionCo
     get :download, :format => "xml", :ids => ids_array
     assert_response :success
 
-    # Why not Content-Type?
-    assert_equal @response.headers['type'], "text/xml"
+    assert_equal @response.headers['Content-Type'], "text/xml"
     
     # Create a regular expression.
     re = %r{\d{2}_\d{2}_\d{4}_\d{2}-\d{2}[.]xml}

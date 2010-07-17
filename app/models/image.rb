@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 # Represents an image
 #
 class Image < UserUpload
@@ -10,4 +13,5 @@ class Image < UserUpload
   has_attached_file :upload, :styles => { :thumb => '50x50>', :small => '200x200' } # TODO: Set :url and :path
   attr_protected :upload_file_name, :upload_content_type, :upload_size  
   validates_attachment_size :upload, :less_than=>MAX_SIZE
+  validates_attachment_content_type :upload, :content_type => [ "image/jpeg", "image/pjpeg", "image/png", "image/x-png", "image/gif" ], :message => 'file must be an image content-type'
 end

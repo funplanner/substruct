@@ -1,6 +1,9 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
-class AccountsControllerTest < ActionController::TestCase
+class AccountsControllerTest < ActionController::IntegrationTest
   fixtures :rights, :roles, :users
 
 
@@ -8,17 +11,17 @@ class AccountsControllerTest < ActionController::TestCase
   def test_should_login
     an_user = users(:c_norris)
 
-    get :login
+    get "/accounts/login"
     assert_response :success
     assert_template 'login'
     
-    post :login, :user_login => "c_norris", :user_password => "admin"
-    # If loged in we should be redirected to welcome. 
+    post "/accounts/login", :user_login => "c_norris", :user_password => "admin"
+    # If loged in we should be redirected to welcome.
     assert_response :redirect
     assert_redirected_to :action => :welcome
     
     # We need to follow the redirect.
-    follow_redirect
+    follow_redirect!
     assert_select "p", :text => /You are now logged into the system/
 
     # Assert the user id is in the session.
@@ -26,7 +29,7 @@ class AccountsControllerTest < ActionController::TestCase
     
     
     # Test the logout here too.
-    post :logout
+    post "/accounts/logout"
     assert_response :success
     assert_template 'logout'
   end
@@ -34,11 +37,11 @@ class AccountsControllerTest < ActionController::TestCase
 
   # Test the login action with a wrong password.
   def test_should_not_login
-    get :login
+    get "/accounts/login"
     assert_response :success
     assert_template 'login'
     
-    post :login, :user_login => "c_norris", :user_password => "wrong_password"
+    post "/accounts/login", :user_login => "c_norris", :user_password => "wrong_password"
     assert_response :success
     assert_template 'login'
     

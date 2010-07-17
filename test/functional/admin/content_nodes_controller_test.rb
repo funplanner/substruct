@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 
 class Admin::ContentNodesControllerTest < ActionController::TestCase
@@ -139,7 +142,7 @@ class Admin::ContentNodesControllerTest < ActionController::TestCase
     login_as :admin
 
     # A file to upload with the content node.
-    shrub1 = fixture_file_upload("/files/shrub1.jpg", 'image/jpeg')
+    shrub1 = substruct_fixture_file("shrub1.jpg")
 
     # Call the new form.
     get :new
@@ -162,11 +165,9 @@ class Admin::ContentNodesControllerTest < ActionController::TestCase
       :sections => ["", sections(:prophecies).id.to_s]
     },
     :file => [ {
-      :file_data => shrub1,
-      :file_data_temp => ""
+      :file_data => shrub1
     }, {
-      :file_data => "",
-      :file_data_temp => ""
+      :file_data => ""
     } ]
     
     # If saved we should be redirected to list. 
@@ -214,9 +215,9 @@ class Admin::ContentNodesControllerTest < ActionController::TestCase
     assert_template 'new'
 
     # Here we assert that the proper fields was marked.
-    assert_select "div.fieldWithErrors input#content_node_title"
-    assert_select "div.fieldWithErrors input#content_node_name"
-    assert_select "div.fieldWithErrors textarea#content_node_content"
+    assert_select "div.field_with_errors input#content_node_title"
+    assert_select "div.field_with_errors input#content_node_name"
+    assert_select "div.field_with_errors textarea#content_node_content"
   end
 
 
@@ -296,8 +297,8 @@ class Admin::ContentNodesControllerTest < ActionController::TestCase
     assert_template 'edit'
 
     # Here we assert that the proper fields was marked.
-    assert_select "div.fieldWithErrors input#content_node_title"
-    assert_select "div.fieldWithErrors input#content_node_name"
+    assert_select "div.field_with_errors input#content_node_title"
+    assert_select "div.field_with_errors input#content_node_name"
   end
 
 

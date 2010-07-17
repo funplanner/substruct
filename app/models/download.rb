@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 # Represents a downloadable file linked to a product.
 # Added as a subclass of 'UserUpload' because we already
 # have support for uploading / managing files.

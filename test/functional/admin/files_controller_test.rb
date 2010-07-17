@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 
 class Admin::FilesControllerTest < ActionController::TestCase
@@ -59,7 +62,7 @@ class Admin::FilesControllerTest < ActionController::TestCase
   def test_should_upload_file
     login_as :admin
     
-    lightsabers_image = fixture_file_upload("/files/lightsabers.jpg", 'image/jpeg')
+    lightsabers_image = substruct_fixture_file("lightsabers.jpg")
 
     # Go to the index.
     get :index
@@ -81,7 +84,7 @@ class Admin::FilesControllerTest < ActionController::TestCase
     assert_redirected_to :action => :index
     
     # Verify that the file is there.
-    an_user_upload = UserUpload.find_by_filename('lightsabers.jpg')
+    an_user_upload = UserUpload.find_by_upload_file_name('lightsabers.jpg')
     assert_not_nil an_user_upload 
 
     # We must erase the record and its files by hand, just calling destroy.

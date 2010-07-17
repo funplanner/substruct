@@ -50,10 +50,7 @@ namespace :substruct do
       
       # Check requirements
       require 'rubygems' unless Object.const_defined?(:Gem)
-#      %w(RedCloth fastercsv mime-types ezcrypto).each do |gem_name|
-#        check_installed_gem(gem_name)
-#      end
-      %w(RedCloth fastercsv ezcrypto).each do |gem_name|
+      %w(RedCloth ezcrypto).each do |gem_name|
         check_installed_gem(gem_name)
       end
       

@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 
 class Admin::UsersControllerTest < ActionController::TestCase
@@ -80,8 +83,8 @@ class Admin::UsersControllerTest < ActionController::TestCase
     assert_template 'new'
 
     # Here we assert that the proper fields was marked.
-    assert_select "div.fieldWithErrors input#user_login"
-    assert_select "div.fieldWithErrors input#user_password"
+    assert_select "div.field_with_errors input#user_login"
+    assert_select "div.field_with_errors input#user_password"
   end
 
 
@@ -144,7 +147,7 @@ class Admin::UsersControllerTest < ActionController::TestCase
     assert_template 'edit'
 
     # Here we assert that the proper fields was marked.
-    assert_select "div.fieldWithErrors input#user_login"
+    assert_select "div.field_with_errors input#user_login"
   end
 
 
@@ -175,7 +178,7 @@ class Admin::UsersControllerTest < ActionController::TestCase
     an_user = users(:admin)
 
     # Setting reference url (to have a place to be redirected).
-    ref_url = url_for :controller => 'admin/users', :action => 'index'
+    ref_url = "/admin/users/index" # url_for :controller => 'admin/users', :action => 'index'
     @request.env["HTTP_REFERER"] = ref_url
 
     ### Try to delete yourself.
@@ -230,8 +233,7 @@ class Admin::UsersControllerTest < ActionController::TestCase
     get :download_customers_csv
     assert_response :success
 
-    # Why not Content-Type?
-    assert_equal @response.headers['type'], "text/csv"
+    assert_equal @response.headers['Content-Type'], "text/csv"
     
     # Create a regular expression.
     re = %r{Customer_list-\d{2}_\d{2}_\d{4}_\d{2}-\d{2}[.]csv}

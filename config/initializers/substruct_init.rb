@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 # Substruct Globals
 ERROR_EMPTY  = 'Please fill in this field.'
 ERROR_NUMBER = 'Please enter only numbers (0-9) in this field.'

@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 class Admin::TagsController < Admin::BaseController
   def index
     list
@@ -43,9 +46,10 @@ class Admin::TagsController < Admin::BaseController
       @tag.parent_id = params[:id]
     end
     if @tag.save
+      response.content_type = 'text/html'
       render(:partial => 'tag_list_row', :locals => {:tag_list_row => @tag})
     else
-      render :text => ""
+      render :text => "", :layout=>false
     end
   end
 
@@ -74,6 +78,6 @@ class Admin::TagsController < Admin::BaseController
 		tag_id = @tag.id
 		@tag.destroy
 		# Render nothing to denote success
-    render :text => ""
+    render :text => "", :layout=>false
   end
 end

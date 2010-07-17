@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 class CreateProductDownloads < ActiveRecord::Migration
   def self.up
   create_table :product_downloads, :force => true do |t|

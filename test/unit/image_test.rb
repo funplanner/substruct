@@ -1,12 +1,15 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
-class ImageTest < ActionController::TestCase
+class ImageTest < ActiveSupport::TestCase
   fixtures :items, :product_images, :user_uploads
 
 
   # Test if a valid image can be created with success.
   def test_should_create_image
-    lightsabers_image = fixture_file_upload("/files/lightsabers.jpg", 'image/jpeg')
+    lightsabers_image = substruct_fixture_file("lightsabers.jpg")
 
     an_image = Image.new
     an_image.upload = lightsabers_image
@@ -22,7 +25,7 @@ class ImageTest < ActionController::TestCase
     a_product = items(:lightsaber)
     assert_equal a_product.images.count, 3
 
-    lightsabers_image = fixture_file_upload("/files/lightsabers.jpg", 'image/jpeg')
+    lightsabers_image = substruct_fixture_file("lightsabers.jpg")
 
     an_image = Image.new
     an_image.upload = lightsabers_image
@@ -39,10 +42,10 @@ class ImageTest < ActionController::TestCase
   # Test if an image will generate and get rid of its files properly.
   def test_should_handle_files
     # make reference to four images.
-    lightsabers_upload = fixture_file_upload("/files/lightsabers.jpg", 'image/jpeg')
-    lightsaber_blue_upload = fixture_file_upload("/files/lightsaber_blue.jpg", 'image/jpeg')
-    lightsaber_green_upload = fixture_file_upload("/files/lightsaber_green.jpg", 'image/jpeg')
-    lightsaber_red_upload = fixture_file_upload("/files/lightsaber_red.jpg", 'image/jpeg')
+    lightsabers_upload = substruct_fixture_file("lightsabers.jpg")
+    lightsaber_blue_upload = substruct_fixture_file("lightsaber_blue.jpg")
+    lightsaber_green_upload = substruct_fixture_file("lightsaber_green.jpg")
+    lightsaber_red_upload = substruct_fixture_file("lightsaber_red.jpg")
 
     # Load them all and save.
     lightsabers_image = Image.new
@@ -61,54 +64,38 @@ class ImageTest < ActionController::TestCase
     lightsaber_red_image.upload = lightsaber_red_upload
     assert lightsaber_red_image.save
     
-#    # Assert that all those files exists.
-#    assert File.exist?(lightsabers_image.upload.path)
-#    for thumb in lightsabers_image.upload.styles
-#      assert File.exist?(thumb.path)
-#    end
-#    
-#    assert File.exist?(lightsaber_blue_image.upload.path)
-#    for thumb in lightsaber_blue_image.upload.styles
-#      assert File.exist?(thumb.path)
-#    end
-#
-#    assert File.exist?(lightsaber_green_image.upload.path)
-#    for thumb in lightsaber_green_image.upload.styles
-#      assert File.exist?(thumb.path)
-#    end
-#
-#    assert File.exist?(lightsaber_red_image.upload.path)
-#    for thumb in lightsaber_red_image.upload.styles
-#      assert File.exist?(thumb.path)
-#    end
+    image_files = []
+    # Assert that all those files exists.
+    assert File.exist?( (image_files << lightsabers_image.upload.path).last )
+    for thumb in lightsabers_image.upload.styles.collect{|x| x[1]}
+      assert File.exist?( (image_files << thumb.attachment.path).last )
+    end
+    
+    assert File.exist?(lightsaber_blue_image.upload.path)
+    for thumb in lightsaber_blue_image.upload.styles.collect{|x| x[1]}
+      assert File.exist?( (image_files << thumb.attachment.path).last )
+    end
+
+    assert File.exist?(lightsaber_green_image.upload.path)
+    for thumb in lightsaber_green_image.upload.styles.collect{|x| x[1]}
+      assert File.exist?( (image_files << thumb.attachment.path).last )
+    end
+
+    assert File.exist?(lightsaber_red_image.upload.path)
+    for thumb in lightsaber_red_image.upload.styles.collect{|x| x[1]}
+      assert File.exist?( (image_files << thumb.attachment.path).last )
+    end
 
     # We must erase the records and its files by hand, just calling destroy.
     assert lightsabers_image.destroy
     assert lightsaber_blue_image.destroy
     assert lightsaber_green_image.destroy
-    assert lightsaber_red_image.destroy
+    assert lightsaber_red_image.destroy    
     
-#    
-#    # See if the files really was erased.
-#    for thumb in lightsabers_image.upload.styles
-#      assert !File.exist?(thumb.path)
-#    end
-#    assert !File.exist?(lightsabers_image.upload.path)
-#
-#    for thumb in lightsaber_blue_image.upload.styles
-#      assert !File.exist?(thumb.path)
-#    end
-#    assert !File.exist?(lightsaber_blue_image.upload.path)
-#
-#    for thumb in lightsaber_green_image.upload.styles
-#      assert !File.exist?(thumb.path)
-#    end
-#    assert !File.exist?(lightsaber_green_image.upload.path)
-#
-#    for thumb in lightsaber_red_image.upload.styles
-#      assert !File.exist?(thumb.path)
-#    end
-#    assert !File.exist?(lightsaber_red_image.upload.path)
+    # See if the files really were erased. (This test is probably redundant, as file-deletion is handled by Paperclip)
+    for image_file in image_files do
+      assert !File.exist?(image_file)
+    end
   end
 
 

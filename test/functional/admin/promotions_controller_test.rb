@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 
 class Admin::PromotionsControllerTest < ActionController::TestCase
@@ -87,8 +90,8 @@ class Admin::PromotionsControllerTest < ActionController::TestCase
     assert_template 'new'
 
     # Here we assert that the proper fields was marked.
-    assert_select "div.fieldWithErrors input#promotion_code"
-    assert_select "div.fieldWithErrors input#promotion_description"
+    assert_select "div.field_with_errors input#promotion_code"
+    assert_select "div.field_with_errors input#promotion_description"
   end
 
 
@@ -157,8 +160,8 @@ class Admin::PromotionsControllerTest < ActionController::TestCase
     assert_template 'edit'
 
     # Here we assert that the proper fields was marked.
-    assert_select "div.fieldWithErrors input#promotion_code"
-    assert_select "div.fieldWithErrors input#promotion_description"
+    assert_select "div.field_with_errors input#promotion_code"
+    assert_select "div.field_with_errors input#promotion_description"
   end
 
 

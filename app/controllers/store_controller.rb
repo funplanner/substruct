@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 class StoreController < ApplicationController
   layout 'main'
   include OrderHelper
@@ -19,7 +22,7 @@ class StoreController < ApplicationController
     ]
   
 
-  if Preference.find_or_create_by_name(:name=>'store_test_transactions', :value=>0).is_true?
+  if Preference.find_or_create_by_name(:name=>'store_test_transactions', :value=>1).is_true?
     ActiveMerchant::Billing::Base.integration_mode = :test 
   else
     ActiveMerchant::Billing::Base.integration_mode = :production
@@ -59,7 +62,7 @@ class StoreController < ApplicationController
       :per_page => 10
     )
     # If only one product comes back, take em directly to it.
-    if @products.size == 1
+    if @products.count == 1
       redirect_to :action => 'show', :id => @products[0].code and return
     else
       render :action => 'index'
@@ -73,7 +76,7 @@ class StoreController < ApplicationController
 		# Tags are passed in as an array.
 		# Passed into this controller like this:
 		# /store/show_by_tags/tag_one/tag_two/tag_three/...
-		@tag_names = params[:tags]
+		@tag_names = params[:tags] || []
 		# Generate tag ID list from names
 		tag_ids_array = Array.new
 		for name in @tag_names

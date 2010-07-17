@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 class CreateContentNodes < ActiveRecord::Migration
   def self.up
     create_table :content_nodes, :force => true do |t|

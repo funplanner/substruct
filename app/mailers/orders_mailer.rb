@@ -1,9 +1,15 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 class OrdersMailer < ActionMailer::Base
   helper :application
 
   def receipt(order, email_text)
     @subject = "Thank you for your order! (\##{order.order_number})"
-    @body       = {:order => order, :email_text => email_text}
+    # @body       = {:order => order, :email_text => email_text}
+    @order = order
+    @email_text = email_text
+    
     @recipients = order.order_user.email_address
 		@bcc        = Preference.find_by_name('mail_copy_to').value.split(',')
 		@from       = Preference.find_by_name('mail_username').value
@@ -15,7 +21,9 @@ class OrdersMailer < ActionMailer::Base
 
   def reset_password(customer)
     @subject = "Password reset for #{Preference.find_by_name('store_name').value}"
-    @body       = {:customer => customer}
+    # @body       = {:customer => customer}
+    @customer = customer
+    
     @recipients = customer.email_address
 		@bcc        = Preference.find_by_name('mail_copy_to').value.split(',')
 		@from       = Preference.find_by_name('mail_username').value
@@ -27,7 +35,9 @@ class OrdersMailer < ActionMailer::Base
 
   def failed(order)
     @subject = "An order has failed on the site"
-    @body       = {:order => order}
+    # @body       = {:order => order}
+    @order=order
+    
 		@recipients = Preference.find_by_name('mail_copy_to').value.split(',')
 		@from       = Preference.find_by_name('mail_username').value
     @sent_on    = Time.now

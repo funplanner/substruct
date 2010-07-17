@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 # THIS IS NOT INCLUDED IN EDGE RAILS...Including it so we can custom-paginate
 # existing collections using will_paginate.
 #

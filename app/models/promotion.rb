@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 # Promotions allow discounts to be applied to orders, and
 # have the ability to add items to an order as well.
 #
@@ -58,10 +61,8 @@ class Promotion < ActiveRecord::Base
 	# Lets us know if any promotions are active.
 	#
 	def self.any_active?
-	  !Promotion.find(
-	    :first, 
-	    :conditions => "NOW() BETWEEN start AND end"
-	  ).nil?
+   time_now = Time.current.to_s(:db) 
+   Promotion.where("start < ?",time_now).where("end > ?",time_now).count > 0
   end
   
   def is_active?

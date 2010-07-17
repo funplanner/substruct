@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 
 class Admin::QuestionsControllerTest < ActionController::TestCase
@@ -101,7 +104,7 @@ class Admin::QuestionsControllerTest < ActionController::TestCase
     assert_template 'new'
 
     # Here we assert that the proper fields was marked.
-    assert_select "div.fieldWithErrors input#question_short_question"
+    assert_select "div.field_with_errors input#question_short_question"
   end
 
 
@@ -131,7 +134,7 @@ class Admin::QuestionsControllerTest < ActionController::TestCase
     
     # If saved we should be redirected to list. 
     assert_response :redirect
-    assert_redirected_to :action => :show
+    assert_redirected_to :action => :show, :id=>assigns(:question).id
     
     # Verify that the change was made.
     a_question.reload
@@ -170,7 +173,7 @@ class Admin::QuestionsControllerTest < ActionController::TestCase
     assert_template 'edit'
 
     # Here we assert that the proper fields was marked.
-    assert_select "div.fieldWithErrors input#question_short_question"
+    assert_select "div.field_with_errors input#question_short_question"
   end
 
 

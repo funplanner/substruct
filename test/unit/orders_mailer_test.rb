@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class OrdersMailerTest < ActiveSupport::TestCase
@@ -46,13 +49,13 @@ class OrdersMailerTest < ActiveSupport::TestCase
    
     receipt_body = ContentNode.find(:first, :conditions => ["name = ?", 'OrderReceipt'])
 
-    response_mail = OrdersMailer.create_receipt(an_order, receipt_body.content)
+    response_mail = OrdersMailer.receipt(an_order, receipt_body.content) # This is a DUPLICATE COPY/INSTANCE of what was just mailed!
     
     assert_equal response_mail.subject, "Thank you for your order! (\##{an_order.order_number})"
     assert_match /Order #: #{an_order.order_number}/, response_mail.body
     assert_equal response_mail.to.to_a, [an_order.order_user.email_address]
     
-    assert_equal ActionMailer::Base.deliveries.length, initial_mbox_length + 1
+    assert_equal initial_mbox_length + 1, ActionMailer::Base.deliveries.length
   end
 
   
@@ -87,13 +90,13 @@ class OrdersMailerTest < ActiveSupport::TestCase
     # Assert that with a failure response the method will return the response message.
     assert_equal an_order.run_transaction_authorize, a_negative_response.message
    
-    response_mail = OrdersMailer.create_failed(an_order)
+    response_mail = OrdersMailer.failed(an_order) # This is a DUPLICATE COPY/INSTANCE of what was just mailed!
     
     assert_equal response_mail.subject, 'An order has failed on the site'
     assert_match /Order #: #{an_order.order_number}/, response_mail.body
     assert_equal response_mail.to.to_a, Preference.find_by_name('mail_copy_to').value.split(',')
     
-    assert_equal ActionMailer::Base.deliveries.length, initial_mbox_length + 1
+    assert_equal initial_mbox_length + 1, ActionMailer::Base.deliveries.length
   end
 
 
@@ -111,7 +114,7 @@ class OrdersMailerTest < ActiveSupport::TestCase
     assert_equal response_mail.to.to_a, [an_order_user.email_address]
 
     # We should have received a mail about that.
-    assert_equal ActionMailer::Base.deliveries.length, initial_mbox_length + 1
+    assert_equal initial_mbox_length + 1, ActionMailer::Base.deliveries.length
   end
 
 

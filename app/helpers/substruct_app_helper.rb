@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 # Methods added to this helper will be available to all templates in the application.
 module SubstructAppHelper
 	include Substruct
@@ -15,7 +18,7 @@ module SubstructAppHelper
     output_str << "<span style=\"color:red;\">*</span>" if required == true
     output_str << name
     output_str << "</label>"
-    return output_str
+    return output_str.html_safe
   end
   
   # Overridden number_to_currency which can handle
@@ -33,7 +36,7 @@ module SubstructAppHelper
       str = number_to_currency(number, options)
     end
     
-    return str
+    return str.html_safe
   end
   
   # When browsing the store by tags we need to know what

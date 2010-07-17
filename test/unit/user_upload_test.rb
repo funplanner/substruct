@@ -1,7 +1,10 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 
-class UserUploadTest < ActionController::TestCase  
+class UserUploadTest < ActiveSupport::TestCase
   fixtures :user_uploads
 
   # TODO: Get rid of this method if it will not be used.
@@ -16,8 +19,8 @@ class UserUploadTest < ActionController::TestCase
 
   # Test if the right class will be used.
   def test_should_init_the_right_class
-    text_asset = fixture_file_upload("/files/text_asset.txt", 'text/plain')
-    lightsabers_image = fixture_file_upload("/files/lightsabers.jpg", 'image/jpeg')
+    text_asset = substruct_fixture_file('text_asset.txt')
+    lightsabers_image = substruct_fixture_file('lightsabers.jpg')
 
     assert_kind_of Asset, UserUpload.init(text_asset)
     assert_kind_of Image, UserUpload.init(lightsabers_image)

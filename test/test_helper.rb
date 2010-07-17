@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 # Load the normal Rails helper. This ensures the environment is loaded.
 require File.expand_path(File.dirname(__FILE__) + '/../../../../test/test_helper')
 
@@ -33,10 +36,6 @@ ActiveSupport::TestCase.use_instantiated_fixtures  = false
 ## FIXME: This was something for Attachment-Fu, may want to replace with a Paperclip Equivalent. 
 ##Image.options[:path] = "public/test/"
 
-
-# Require mocha.
-require 'mocha'
-
 ### Helper methods for test cases ###
 
 def login_as(user)
@@ -44,7 +43,12 @@ def login_as(user)
 end
 
 def login_as_customer(customer)
-  @request.session[:customer] = order_users(customer).id
+  order_user = order_users(customer)
+  post "/customers/login", :login=>order_user.email_address, :password=>order_user.password
+end
+
+def substruct_fixture_file(filename, mode='rb')
+  File.open(File.expand_path(File.dirname(__FILE__) + "/fixtures/files/#{filename}"), mode)
 end
 
 # Unfortunately url_for doesn't work as is inside tests, so, a fix.

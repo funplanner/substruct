@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 class Order < ActiveRecord::Base  
   # Associations
   has_many :order_line_items, :dependent => :destroy
@@ -246,7 +249,7 @@ class Order < ActiveRecord::Base
       require 'csv'
       csv_source = CSV
     else
-      require 'fastercsv' 
+      require 'fastercsv'
       csv_source = FasterCSV
     end
     csv_string = csv_source.generate do |csv|
@@ -597,7 +600,7 @@ class Order < ActiveRecord::Base
     elsif cc_processor == Preference::CC_PROCESSORS[1]
       run_transaction_paypal_ipn
     else
-      throw "The currently set preference for cc_processor is not recognized. You might want to add it to the code..."
+      throw "The currently set preference for cc_processor is not recognized. You might want to add it to the code...".to_sym
     end
   end
  

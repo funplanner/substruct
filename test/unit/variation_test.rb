@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class VariationTest < ActiveSupport::TestCase
@@ -55,7 +58,7 @@ class VariationTest < ActiveSupport::TestCase
     assert a_variation.save
     
     # Verify if a default date is beeing assigned to date_available.
-    assert_equal a_variation.date_available, Date.today
+    assert_equal a_variation.date_available, Date.today.to_time
   end
 
 

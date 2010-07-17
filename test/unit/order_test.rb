@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class OrderTest < ActiveSupport::TestCase
@@ -364,7 +367,11 @@ class OrderTest < ActiveSupport::TestCase
     
     # Test the CSV.
     csv_string = Order.get_csv_for_orders([an_order, another_order])
-    csv_array = FasterCSV.parse(csv_string)
+    if (RUBY_VERSION.to_f >= 1.9)
+      csv_array = CSV.parse(csv_string)
+    else
+      csv_array = FasterCSV.parse(csv_string)
+    end
 
     # Test if the header is right.
     assert_equal csv_array[0], [
@@ -711,17 +718,19 @@ class OrderTest < ActiveSupport::TestCase
     
     # Now we say that we will use authorize. Mock the method and test it.
     assert Preference.save_settings({ "cc_processor" => "Authorize.net" })
-    Order.any_instance.expects(:run_transaction_authorize).once.returns('executed_authorize')
+    an_order.expects(:run_transaction_authorize).once.returns('executed_authorize')
     assert_equal an_order.run_transaction, "executed_authorize"
 
     # Now we say that we will use paypal ipn. Mock the method and test it.
     assert Preference.save_settings({ "cc_processor" => "PayPal IPN" })
-    Order.any_instance.expects(:run_transaction_paypal_ipn).once.returns('executed_paypal_ipn')
+    an_order.expects(:run_transaction_paypal_ipn).once.returns('executed_paypal_ipn')
     assert_equal an_order.run_transaction, "executed_paypal_ipn"
 
     # Now we say that we will use a non existent processor.
     assert Preference.save_settings({ "cc_processor" => "Nonexistent" })
-    assert_throws(:"The currently set preference for cc_processor is not recognized. You might want to add it to the code..."){an_order.run_transaction}
+    assert_throws 'The currently set preference for cc_processor is not recognized. You might want to add it to the code...'.to_sym do
+      an_order.run_transaction
+    end
   end
 
 
@@ -773,21 +782,20 @@ class OrderTest < ActiveSupport::TestCase
     ActiveMerchant::Billing::AuthorizeNetGateway.any_instance.stubs(:purchase).returns(a_positive_response)
 
     # Assert that with a success response the method will return true.
-    assert_equal an_order.run_transaction_authorize, true
+    assert_equal true, an_order.run_transaction_authorize
 
     # We should have received a mail about that.
-    assert_equal ActionMailer::Base.deliveries.length, initial_mbox_length + 1
- 
+    assert_equal initial_mbox_length + 1, ActionMailer::Base.deliveries.length 
     
     # Stub the deliver_receipt method to raise an exception.
-    Order.any_instance.stubs(:deliver_receipt).raises('An error!')
+    an_order.stubs(:deliver_receipt).raises('An error!')
     
     # Run the transaction again.
     an_order.run_transaction_authorize
     # We don't need to assert the raise because it will be caugh in run_transaction_authorize.
 
     # We should NOT have received a mail about that.
-    assert_equal ActionMailer::Base.deliveries.length, initial_mbox_length + 1
+    assert_equal initial_mbox_length + 1, ActionMailer::Base.deliveries.length
   end
 
 
@@ -828,18 +836,18 @@ class OrderTest < ActiveSupport::TestCase
     assert_equal an_order.run_transaction_authorize, a_negative_response.message
 
     # We should have received a mail about that.
-    assert_equal ActionMailer::Base.deliveries.length, initial_mbox_length + 1
+    assert_equal initial_mbox_length + 1, ActionMailer::Base.deliveries.length
  
     
     # Stub the deliver_failed method to raise an exception.
-    Order.any_instance.stubs(:deliver_failed).raises('An error!')
+    an_order.stubs(:deliver_failed).raises('An error!')
     
     # Run the transaction again.
     an_order.run_transaction_authorize
     # We don't need to assert the raise because it will be caugh in run_transaction_authorize.
 
     # We should NOT have received a mail about that.
-    assert_equal ActionMailer::Base.deliveries.length, initial_mbox_length + 1
+    assert_equal initial_mbox_length + 1, ActionMailer::Base.deliveries.length
   end
 
 
@@ -991,7 +999,7 @@ class OrderTest < ActiveSupport::TestCase
     an_order.deliver_receipt    
 
     # We should have received a mail about that.
-    assert_equal ActionMailer::Base.deliveries.length, initial_mbox_length + 1
+    assert_equal initial_mbox_length + 1, ActionMailer::Base.deliveries.length
     
     receipt_content = ContentNode.find(:first, :conditions => ["name = ?", 'OrderReceipt'])
     
@@ -1002,7 +1010,7 @@ class OrderTest < ActiveSupport::TestCase
       an_order.deliver_receipt    
 
       # We should NOT have received a mail about that.
-      assert_equal ActionMailer::Base.deliveries.length, initial_mbox_length + 1
+      assert_equal initial_mbox_length + 1, ActionMailer::Base.deliveries.length
     ensure
       # Put the name back.
       assert receipt_content.update_attributes(:name => 'OrderReceipt')
@@ -1023,7 +1031,7 @@ class OrderTest < ActiveSupport::TestCase
     an_order.deliver_failed    
 
     # We should have received a mail about that.
-    assert_equal ActionMailer::Base.deliveries.length, initial_mbox_length + 1
+    assert_equal initial_mbox_length + 1, ActionMailer::Base.deliveries.length
   end
   
 
@@ -1200,7 +1208,7 @@ class OrderTest < ActiveSupport::TestCase
     assert_not_equal notes_before, notes_after
     
     # We should have received a mail about that.
-    assert_equal ActionMailer::Base.deliveries.length, initial_mbox_length + 1
+    assert_equal initial_mbox_length + 1, ActionMailer::Base.deliveries.length
     
     
     # Stub the deliver_receipt method to raise an exception.
@@ -1211,7 +1219,7 @@ class OrderTest < ActiveSupport::TestCase
     # We don't need to assert the raise because it will be caugh in pass_ipn.
 
     # We should NOT have received a mail about that.
-    assert_equal ActionMailer::Base.deliveries.length, initial_mbox_length + 1
+    assert_equal initial_mbox_length + 1, ActionMailer::Base.deliveries.length
   end
   
 
@@ -1240,7 +1248,7 @@ class OrderTest < ActiveSupport::TestCase
     assert_not_equal notes_before, notes_after
     
     # We should have received a mail about that.
-    assert_equal ActionMailer::Base.deliveries.length, initial_mbox_length + 1
+    assert_equal initial_mbox_length + 1, ActionMailer::Base.deliveries.length
 
   
     # Stub the deliver_receipt method to raise an exception.
@@ -1251,7 +1259,7 @@ class OrderTest < ActiveSupport::TestCase
     # We don't need to assert the raise because it will be caugh in fail_ipn.
 
     # We should NOT have received a mail about that.
-    assert_equal ActionMailer::Base.deliveries.length, initial_mbox_length + 1
+    assert_equal initial_mbox_length + 1, ActionMailer::Base.deliveries.length
   end
 
 

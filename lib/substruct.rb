@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 #  Copyright (c) 2006 Subimage Interactive - http://www.subimage.com
 require_dependency 'substruct/login_system.rb'
 
@@ -26,9 +29,9 @@ module Substruct
   def link_to_section(label, options = {})
 		$ctrlop = options[:controller]
     if request.fullpath == options[:controller]
-      link_to(label, options, { :class => "active"})
+      link_to(label.html_safe, options, { :class => "active"})
     else
-      link_to(label, options)
+      link_to(label.html_safe, options)
     end
   end
 
@@ -93,8 +96,8 @@ LOOKING INTO OTHER OPTIONS!!!
         list << "</li>"
       end
     end
-
-    return list << "</ul>"
+    list << "</ul>"
+    return list.html_safe
   end
 
   # Truncates to the nearest word
@@ -212,14 +215,14 @@ LOOKING INTO OTHER OPTIONS!!!
 
   # Returns markdown formatted content
   def get_markdown(content)
-    new_content = RedCloth.new(content).to_html
+    new_content = RedCloth.new(content).to_html.html_safe
   end
 
   # Gets a markdown formatted snippet of content, truncated.
   def get_markdown_snippet(content, length=100)
     rc = RedCloth.new(content).to_html
     cut_content = truncate_words(rc, length)
-    new_content = sanitize_html(cut_content)
+    new_content = sanitize_html(cut_content).html_safe
   end
 
 end

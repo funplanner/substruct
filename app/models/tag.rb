@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 # Tags are how we organize products inside Substruct.
 #
 # Tags may be ordered, and contain other tags. In this fashion,

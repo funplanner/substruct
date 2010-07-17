@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 class Admin::UsersController < Admin::BaseController
   
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
@@ -76,11 +79,17 @@ class Admin::UsersController < Admin::BaseController
   # Good for exporting to mailing lists, etc.
   #
   def download_customers_csv
-    require 'fastercsv'
+    if (RUBY_VERSION.to_f >= 1.9)
+      require 'csv'
+      csv_source = CSV
+    else
+      require 'fastercsv'
+      csv_source = FasterCSV
+    end
     @customers = OrderUser.find(
       :all
     )
-    csv_string = FasterCSV.generate do |csv|
+    csv_string = csv_source.generate do |csv|
       # Do header generation 1st
       csv << [
         "FirstName", "LastName", "EmailAddress"

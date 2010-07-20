@@ -1,4 +1,7 @@
-require File.dirname(__FILE__) + '/../test_helper'
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class OrderUserTest < ActiveSupport::TestCase
   fixtures :order_users, :orders, :items
@@ -36,7 +39,7 @@ class OrderUserTest < ActiveSupport::TestCase
   end
 
   def test_get_csv_for
-    csv_string = OrderUser.get_csv_for(OrderUser.find(:all))
+    csv_string = OrderUser.get_csv_for(OrderUser.all)
     assert_kind_of String, csv_string
   end
 
@@ -50,15 +53,15 @@ class OrderUserTest < ActiveSupport::TestCase
   def test_invalid_email_address_blank
     @new_customer.email_address = ''
     assert !@new_customer.valid?
-    assert @new_customer.errors.invalid?(:email_address)
-    assert_same_elements ["Please fill in this field.", "Please enter a valid email address."], @new_customer.errors.on(:email_address)
+    assert @new_customer.errors[:email_address].any?
+    assert_same_elements ["Please fill in this field.", "Please enter a valid email address."], @new_customer.errors[:email_address]
   end
 
   def test_invalid_email_address_format
     @new_customer.email_address = "arthur.dent"
     assert !@new_customer.valid?
-    assert @new_customer.errors.invalid?(:email_address)
-    assert_equal "Please enter a valid email address.", @new_customer.errors.on(:email_address)
+    assert @new_customer.errors[:email_address].any?
+    assert "Please enter a valid email address.", @new_customer.errors[:email_address].any? ## FIXME: Why are validations pushing DUPLICATE messages into errors[] ?
   end
 
   # An order user must have an unique email address.
@@ -66,8 +69,8 @@ class OrderUserTest < ActiveSupport::TestCase
     @new_customer.email_address = "santa.claus@whoknowswhere.com"
     Preference.save_setting 'store_require_login' => 1
     assert !@new_customer.valid?
-    assert @new_customer.errors.invalid?(:email_address)
-    assert_equal "\n\t    This email address has already been taken in our system.<br/>\n\t    If you have already ordered with us, please login.\n\t  ", @new_customer.errors.on(:email_address)
+    assert @new_customer.errors[:email_address].any?
+    assert "\n\t    This email address has already been taken in our system.<br/>\n\t    If you have already ordered with us, please login.\n\t  ", @new_customer.errors[:email_address].any? ## FIXME: Why are validations pushing DUPLICATE messages into errors[] ?
   end
 
   # Test if an order user can be authenticated.

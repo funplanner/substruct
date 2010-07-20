@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 # Deals with customer logins, previous orders and wishlists.
 #
 class CustomersController < ApplicationController
@@ -125,7 +128,7 @@ class CustomersController < ApplicationController
       :conditions => ["order_number = ? AND order_user_id = ?", params[:id], @customer.id]
     )
     # 404 for non found...
-    render(:file => "#{RAILS_ROOT}/public/404.html", :status => 404) and return unless @order
+    render(:file => "#{Rails.root}/public/404.html", :status => 404) and return unless @order
     
     @order_time = @order.created_on.strftime("%m/%d/%y %I:%M %p")
     @title = "Order #{@order.order_number}"
@@ -217,16 +220,16 @@ class CustomersController < ApplicationController
       :conditions => ["order_number = ? AND order_user_id = ?", params[:order_number], @customer.id]
     )
     # 404 for non found...
-    render(:file => "#{RAILS_ROOT}/public/404.html", :status => 404) and return unless order
+    render(:file => "#{Rails.root}/public/404.html", :status => 404) and return unless order
     
     # Now find download...
     file = Download.find(:first, :conditions => ["id = ?", params[:download_id]])
     
     # Ensure it belongs to the passed in order.
     if file && order.downloads.include?(file)
-      send_file(file.full_filename)
+      send_file(file.upload.path) ## FIXME: This *ONLY* works for Paperclip w/ File Repo - what about Amazon S3? 
     else
-      render(:file => "#{RAILS_ROOT}/public/404.html", :status => 404) and return
+      render(:file => "#{Rails.root}/public/404.html", :status => 404) and return
     end
   end
 	
@@ -249,7 +252,7 @@ class CustomersController < ApplicationController
     # store current uri in  the session.
     # we can return to this location by calling return_location
     def store_location
-      session[:return_to] = request.request_uri
+      session[:return_to] = request.fullpath
     end
 	
 	  # Move to the last store_location call or to the passed default one

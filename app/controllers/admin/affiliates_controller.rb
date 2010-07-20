@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 class Admin::AffiliatesController < Admin::BaseController
   verify :method => :post, 
     :only => [ :create, :update, :destroy], 
@@ -84,7 +87,7 @@ class Admin::AffiliatesController < Admin::BaseController
   def list_payments
     d = params[:date]
     if d
-      if d[:year]
+      if d.is_a?(Hash) && defined?(d[:year])
         @date = Time.mktime(d[:year], d[:month], d[:day], 1).to_date
       else
         @date = Date.parse(d)

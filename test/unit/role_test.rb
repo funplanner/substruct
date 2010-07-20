@@ -1,4 +1,7 @@
-require File.dirname(__FILE__) + '/../test_helper'
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class RoleTest < ActiveSupport::TestCase
   fixtures :roles, :rights, :users
@@ -45,8 +48,8 @@ class RoleTest < ActiveSupport::TestCase
   def test_should_not_create_invalid_role
     a_role = Role.new
     assert !a_role.valid?
-    assert a_role.errors.invalid?(:name)
-    assert_equal "can't be blank", a_role.errors.on(:name)
+    assert a_role.errors[:name].any?
+    assert_equal ["can't be blank"], a_role.errors[:name]
 
     assert !a_role.save
   end

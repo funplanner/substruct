@@ -1,8 +1,6 @@
-require_dependency 'order'
-require_dependency 'order_address'
-require_dependency 'order_account'
-require_dependency 'order_user'
-
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 # OrderHelper helps controllers in the application CrUD orders.
 #
 # It's used as a mixin for various controllers.

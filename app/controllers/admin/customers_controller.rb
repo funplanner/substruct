@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 class Admin::CustomersController < Admin::BaseController         
   before_filter :get_customer,
     :only => [:show]
@@ -20,7 +23,6 @@ class Admin::CustomersController < Admin::BaseController
         render :action => 'list' and return
       end
       format.csv do
-        require 'fastercsv'
         send_data(
           OrderUser.get_csv_for(OrderUser.find(:all)),
           :filename => Time.now.strftime("Customer_list-%m_%d_%Y_%H-%M.csv"),

@@ -1,4 +1,7 @@
-require File.dirname(__FILE__) + '/../../test_helper'
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
+require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 
 class Admin::UsersControllerTest < ActionController::TestCase
   fixtures :rights, :roles, :users
@@ -77,8 +80,8 @@ class Admin::UsersControllerTest < ActionController::TestCase
     assert_template 'new'
 
     # Here we assert that the proper fields was marked.
-    assert_select "div.fieldWithErrors input#user_login"
-    assert_select "div.fieldWithErrors input#user_password"
+    assert_select "div.field_with_errors input#user_login"
+    assert_select "div.field_with_errors input#user_password"
   end
 
 
@@ -138,7 +141,7 @@ class Admin::UsersControllerTest < ActionController::TestCase
     assert_template 'edit'
 
     # Here we assert that the proper fields was marked.
-    assert_select "div.fieldWithErrors input#user_login"
+    assert_select "div.field_with_errors input#user_login"
   end
 
 
@@ -169,7 +172,8 @@ class Admin::UsersControllerTest < ActionController::TestCase
     user = users(:admin)
 
     # Setting reference url (to have a place to be redirected).
-    ref_url = url_for :controller => 'admin/users', :action => 'index'
+    # Rubyjedi FIXME: this would use the url_for() monkey_patch in test_helper.rb, but the better fix is probably to declare this UsersControllerTest class as an IntegrationTest instead of a TestCase. 
+    ref_url = "/admin/users/index" # url_for :controller => 'admin/users', :action => 'index'
     @request.env["HTTP_REFERER"] = ref_url
 
     ### Try to delete yourself.

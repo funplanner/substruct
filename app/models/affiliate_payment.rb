@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 # Tracks payments made to Affiliates
 class AffiliatePayment < ActiveRecord::Base
   has_many :orders, :dependent => :nullify
@@ -34,8 +37,14 @@ class AffiliatePayment < ActiveRecord::Base
   
   # Gets a CSV string that represents an order list.
   def self.get_csv_for(payment_list)
-    require 'fastercsv'
-    csv_string = FasterCSV.generate do |csv|
+    if (RUBY_VERSION.to_f >= 1.9)
+      require 'csv'
+      csv_source = CSV
+    else
+      require 'fastercsv'
+      csv_source = FasterCSV
+    end
+    csv_string = csv_source.generate do |csv|
       payment_list.each do |p|
         affil = p.affiliate
         csv << [affil.email_address, p.amount, 'USD', p.number]

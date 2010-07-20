@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 module SubstructApplicationController
   include Substruct
   include LoginSystem
@@ -57,7 +60,7 @@ module SubstructApplicationController
   def ssl_required
     if ENV['RAILS_ENV'] == "production" && Substruct.override_ssl_production_mode == false
       if !request.ssl?
-        redirect_to "https://" + request.host + request.request_uri
+        redirect_to "https://" + request.host + request.fullpath
         flash.keep
         return false
       end

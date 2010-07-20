@@ -1,4 +1,7 @@
-require File.dirname(__FILE__) + '/../test_helper'
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class ContentNodeTest < ActiveSupport::TestCase
   fixtures :content_nodes, :sections
@@ -64,19 +67,19 @@ class ContentNodeTest < ActiveSupport::TestCase
   def test_should_not_create_invalid_content_node
     a_content_node = ContentNode.new
     assert !a_content_node.valid?
-    assert a_content_node.errors.invalid?(:name)
-    assert a_content_node.errors.invalid?(:title)
-    assert a_content_node.errors.invalid?(:content)
+    assert a_content_node.errors[:name].any?
+    assert a_content_node.errors[:title].any?
+    assert a_content_node.errors[:content].any?
     # A content node must have a name, a title and a content.
-    assert_equal "can't be blank", a_content_node.errors.on(:name)
-    assert_equal "can't be blank", a_content_node.errors.on(:title)
-    assert_equal "can't be blank", a_content_node.errors.on(:content)
+    assert_equal ["can't be blank"], a_content_node.errors[:name]
+    assert_equal ["can't be blank"], a_content_node.errors[:title]
+    assert_equal ["can't be blank"], a_content_node.errors[:content]
 
     a_content_node.name = "silent_birth"
     assert !a_content_node.valid?
-    assert a_content_node.errors.invalid?(:name)
+    assert a_content_node.errors[:name].any?
     # A content node must have an unique name.
-    assert_equal "This URL has already been taken. Create a unique URL please.", a_content_node.errors.on(:name)
+    assert_equal ["This URL has already been taken. Create a unique URL please."], a_content_node.errors[:name]
 
     assert !a_content_node.save
   end

@@ -7,9 +7,9 @@
 #login {
   width: 482px;
   height: 408px;
-  background-image: url(/plugin_assets/substruct/images/login_bg.png) !important;
+  background-image: url(/images/login_bg.png) !important;
   background-image: none;
-  filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/plugin_assets/substruct/images/login_bg.png',sizingMethod='scale');
+  filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/login_bg.png',sizingMethod='scale');
 }
 #content {
   width: 425px;

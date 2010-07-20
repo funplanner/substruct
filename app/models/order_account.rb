@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 class OrderAccount < ActiveRecord::Base
   require 'ezcrypto'
   
@@ -25,6 +28,7 @@ class OrderAccount < ActiveRecord::Base
   
   
   # VALIDATION ================================================================
+  validates_with OrderAccountValidator
   
   validates_presence_of :order_user_id
   
@@ -42,21 +46,6 @@ class OrderAccount < ActiveRecord::Base
   
   validates_format_of :credit_ccv, :with => /^[\d]*$/, :message => ERROR_NUMBER
   validates_numericality_of :expiration_month, :expiration_year
-
-  # Make sure expiration date is ok.
-  def validate
-    today = DateTime.now
-    begin
-      if (
-        (today.month > self.expiration_month && today.year >= self.expiration_year) ||
-        (today.year > self.expiration_year)
-      )
-        errors.add(:expiration_month, 'Please enter a valid expiration date.')
-      end
-    rescue
-      errors.add(:expiration_month, 'Please enter a valid expiration date.')
-    end
-  end
 
   # CLASS METHODS =============================================================
 

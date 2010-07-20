@@ -25,7 +25,7 @@
       <% end %>
     </table>
     <br/>
-    <% form_tag(:action => 'make_payments') do %>
+    <%= form_tag(:action => 'make_payments') do %>
       <p>
         <%= make_label('Notes') %>
         <span class="info">Will be applied to all payments, <b>visible to affiliates</b>.</span>

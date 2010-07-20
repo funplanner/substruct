@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 class StoreController < ApplicationController
   layout 'main'
   include OrderHelper
@@ -19,7 +22,7 @@ class StoreController < ApplicationController
     ]
   
 
-  if Preference.find_by_name('store_test_transactions').is_true?
+  if Preference.find_or_create_by_name(:name=>'store_test_transactions', :value=>1).is_true?
     ActiveMerchant::Billing::Base.integration_mode = :test 
   else
     ActiveMerchant::Billing::Base.integration_mode = :production
@@ -37,40 +40,22 @@ class StoreController < ApplicationController
   # Our simple store index
   def index
     @title = "Store"
+    @products = Product.available
+    @tags = Tag.find_alpha
+    @tag_names = nil
+    @viewing_tags = nil
     respond_to do |format|
-      format.html do
-        @tags = Tag.find_alpha
-        @tag_names = nil
-        @viewing_tags = nil
-        @products = Product.paginate(
-          :order => 'name ASC',
-          :conditions => Product::CONDITIONS_AVAILABLE,
-          :page => params[:page],
-          :per_page => 10
-        )
-      end
-      format.rss do
-        @products = Product.find(
-          :all,
-          :conditions => Product::CONDITIONS_AVAILABLE,
-          :order => "date_available DESC"
-        )
-        render :action => 'index.rxml', :layout => false and return
-      end
+      format.html { @products = @products.order("name ASC").paginate(:page => params[:page],:per_page => 10) }
+      format.rss  { @products = @products.order("date_available DESC") ; render :action => 'index.rxml', :layout => false and return }
     end
   end
   
   def search
     @search_term = params[:search_term]
     @title = "Search Results for: #{@search_term}"
-    @products = Product.paginate(
-      :order => 'name ASC',
-      :conditions => ["(name LIKE ? OR code = ?) AND #{Product::CONDITIONS_AVAILABLE}", "%#{@search_term}%", @search_term],
-      :page => params[:page],
-      :per_page => 10
-    )
+    @products = Product.available.order('name ASC').where(["(name LIKE ? OR code = ?)", "%#{@search_term}%", @search_term]).paginate(:page => params[:page],:per_page => 10)
     # If only one product comes back, take em directly to it.
-    if @products.size == 1
+    if @products.count == 1
       redirect_to :action => 'show', :id => @products[0].code and return
     else
       render :action => 'index'
@@ -84,7 +69,7 @@ class StoreController < ApplicationController
     # Tags are passed in as an array.
     # Passed into this controller like this:
     # /store/show_by_tags/tag_one/tag_two/tag_three/...
-    @tag_names = params[:tags]
+    @tag_names = params[:tags] || []
     # Generate tag ID list from names
     tag_ids_array = Array.new
     for name in @tag_names
@@ -92,12 +77,12 @@ class StoreController < ApplicationController
       if temp_tag then
         tag_ids_array << temp_tag.id
       else
-        render(:file => "#{RAILS_ROOT}/public/404.html", :status => 404) and return
+        render(:file => "#{Rails.root}/public/404.html", :status => 404) and return
       end
     end
     
     if tag_ids_array.size == 0
-      render(:file => "#{RAILS_ROOT}/public/404.html", :status => 404) and return
+      render(:file => "#{Rails.root}/public/404.html", :status => 404) and return
     end
     
     @viewing_tags = Tag.find(tag_ids_array, :order => "parent_id ASC")
@@ -169,7 +154,7 @@ class StoreController < ApplicationController
     if (Preference.find_by_name('store_use_inventory_control').is_true? && @quantity > @product.quantity.to_i)
       logger.info "There's an error adding to the cart..."
       respond_to do |format|
-        format.html { render(:file => "#{RAILS_ROOT}/public/404.html", :status => 404) and return}
+        format.html { render(:file => "#{Rails.root}/public/404.html", :status => 404) and return}
         format.js { render :nothing => true, :status => 400 and return }
       end
     else

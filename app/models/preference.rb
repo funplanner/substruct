@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 # Handles storing of preferences for the application.
 #
 # This is an internal structure mostly, which is useful to access / save
@@ -12,7 +15,7 @@ class Preference < ActiveRecord::Base
   # other records (like country)
   CC_PROCESSORS = ['Authorize.net', 'PayPal IPN']
   MAIL_AUTH = ['none', 'plain', 'login', 'cram_md5']
-  validates_presence_of :name, :type
+  validates_presence_of :name
   validates_uniqueness_of :name
   
   # Can throw an error if these items aren't set.

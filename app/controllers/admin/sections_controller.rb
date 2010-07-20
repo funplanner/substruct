@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 class Admin::SectionsController < Admin::BaseController
   def index
     list
@@ -43,9 +46,10 @@ class Admin::SectionsController < Admin::BaseController
       @section.parent_id = params[:id]
     end
     if @section.save
+      response.content_type = 'text/html'
       render(:partial => 'section_list_row', :locals => {:section_list_row => @section})
     else
-      render :text => ""
+      render :text => "", :layout=>false
     end
   end
 
@@ -74,6 +78,6 @@ class Admin::SectionsController < Admin::BaseController
 		section_id = @section.id
 		@section.destroy
 		# Render nothing to denote success
-    render :text => ""
+    render :text => "", :layout=>false
   end
 end

@@ -1,4 +1,7 @@
-require File.dirname(__FILE__) + '/../test_helper'
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class TagTest < ActiveSupport::TestCase
   fixtures :tags, :items
@@ -42,14 +45,14 @@ class TagTest < ActiveSupport::TestCase
   def test_should_not_create_invalid_tag
     a_tag = Tag.new
     assert !a_tag.valid?
-    assert a_tag.errors.invalid?(:name)
+    assert a_tag.errors[:name].any?
     # A tag must have a name.
-    assert_equal "can't be blank", a_tag.errors.on(:name)
+    assert_equal ["can't be blank"], a_tag.errors[:name]
     a_tag.name = "Books"
     assert !a_tag.valid?
-    assert a_tag.errors.invalid?(:name)
+    assert a_tag.errors[:name]
     # A tag must have an unique name.
-    assert_equal "has already been taken", a_tag.errors.on(:name)
+    assert_equal ["has already been taken"], a_tag.errors[:name]
     assert !a_tag.save
   end
 

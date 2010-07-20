@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 # OrderUser aka Customer
 #
 # This is what ties all orders / addresses / wishlist items
@@ -86,8 +89,14 @@ class OrderUser < ActiveRecord::Base
   
   # Returns a CSV string for customers passed in
   def self.get_csv_for(list)
-    require 'fastercsv'
-    csv_string = FasterCSV.generate do |csv|
+    if (RUBY_VERSION.to_f >= 1.9)
+      require 'csv'
+      csv_source = CSV
+    else
+      require 'fastercsv'
+      csv_source = FasterCSV
+    end
+    csv_string = csv_source.generate do |csv|
       # Do header generation 1st
       csv << [
         "FirstName", "LastName", "EmailAddress"
@@ -97,7 +106,7 @@ class OrderUser < ActiveRecord::Base
       end
     end
 
-    directory = File.join(RAILS_ROOT, "public/system/customers")
+    directory = File.join(Rails.root, "public/system/customers")
     file_name = Time.now.strftime("Customer_list-%m_%d_%Y_%H-%M")
     file = "#{file_name}.csv"
     save_to = "#{directory}/#{file}"
@@ -156,7 +165,7 @@ class OrderUser < ActiveRecord::Base
   #
   def reset_password 
     self.update_attribute('password', OrderUser.generate_password())
-    email = OrdersMailer.deliver_reset_password(self)
+    email = OrdersMailer.reset_password(self).deliver
   end
   
   # Adds an item to this customer's wishlist

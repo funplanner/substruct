@@ -46,7 +46,10 @@
 		<!-- search box -->
 		<div id="searchbox">
 			<form action="/store/search" method="post">
-				<input type="image" src="/plugin_assets/substruct/images/public-ui/buttons/search.gif" style="float:right;">
+				<% if protect_against_forgery? %>
+				<input type="hidden" name="authenticity_token", value="<%= form_authenticity_token -%>">
+				<% end -%>
+				<input type="image" src="/images/public-ui/buttons/search.gif" style="float:right;">
 				<input type="text" name="search_term" class="textInput big" style="float:right; margin-right: 5px;" />
 			</form>
 		</div>

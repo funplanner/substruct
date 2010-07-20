@@ -19,15 +19,15 @@
 				<!-- product image for reordering -->
 				<li id="image_<%= @p_image.id %>">
 					<div class="float">
-            <% if @p_image.public_filename(:thumb) then %>
-              <%= image_tag @p_image.public_filename(:thumb) %>
+            <% if @p_image.upload.url(:thumb) then %>
+              <%= image_tag @p_image.upload.url(:thumb) %>
 						<% end %>
 					</div>
 					<div class="float info">
 						<br/>
-            <a href="<%= @p_image.public_filename(:small) %>" class="submodal-400-400">View Small</a>
+            <a href="<%= @p_image.upload.url(:small) %>" class="submodal-400-400">View Small</a>
 						<br/>
-            <a href="<%= @p_image.public_filename %>" class="submodal-400-400">View Original</a>
+            <a href="<%= @p_image.upload.url %>" class="submodal-400-400">View Original</a>
 					</div>
 					<div style="float:right;margin-top:10px;">
 						<%= 

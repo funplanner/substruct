@@ -1,4 +1,7 @@
-require File.dirname(__FILE__) + '/../test_helper'
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class QuestionsControllerTest < ActionController::TestCase
   fixtures :questions
@@ -68,8 +71,8 @@ class QuestionsControllerTest < ActionController::TestCase
     
     # Here we assert that an error explanation was given and that the proper
     # fields was marked.
-    assert_select "div.fieldWithErrors input#question_email_address"
-    assert_select "div.fieldWithErrors textarea#question_long_question"
+    assert_select "div.field_with_errors input#question_email_address"
+    assert_select "div.field_with_errors textarea#question_long_question"
   end
   
   

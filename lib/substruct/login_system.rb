@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 module LoginSystem 
   protected
   
@@ -95,7 +98,7 @@ module LoginSystem
   # store current uri in  the session.
   # we can return to this location by calling return_location
   def store_location
-    session[:return_to] = request.request_uri
+    session[:return_to] = request.fullpath
   end
 
   # move to the last store_location call or to the passed default one

@@ -33,7 +33,7 @@
 					<span class="title" title="<%=h item.name %>">
 						<%= 
 							link_to(
-								truncate(item.name, 10), 
+								truncate(item.name, :length=>10), 
 								:controller => 'store', 
 								:action => 'show', 
 								:id => item.product_id
@@ -47,7 +47,7 @@
 						<%
 						if item.product && item.product.images[0]
 						  @image = item.product.images[0]
-              image_url = @image.public_filename(:thumb)
+              image_url = @image.upload.url(:thumb)
 							if image_url then
 						-%>
 								<%= image_tag image_url %>

@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 class Admin::OrdersController < Admin::BaseController
   layout 'admin'
   include OrderHelper
@@ -274,7 +277,7 @@ class Admin::OrdersController < Admin::BaseController
         content = Order.get_csv_for(@orders)
     end
     
-    directory = File.join(RAILS_ROOT, "public/system/order_files")
+    directory = File.join(Rails.root, "public/system/order_files")
     file_name = Time.now.strftime("%m_%d_%Y_%H-%M")
     file = "#{file_name}.#{params[:format]}"
     save_to = "#{directory}/#{file}"

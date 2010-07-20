@@ -4,15 +4,7 @@
 	
 	<h3 style="margin-top:20px;">Terms and Conditions</h3>
 	<div class="padLeft" style="margin-bottom:20px;">
-  	<%= 
-  	  render_component(
-  	    :controller => "content_nodes",
-  	    :action => "show_snippet",
-        :params => {
-          :name => 'AffiliateTermsAndConditions'
-        }
-      ) 
-    %>
+  	<%= get_markdown Snippet.find_by_name('AffiliateTermsAndConditions').content %>
   </div>
 	
 	<h3>Your Information</h3>

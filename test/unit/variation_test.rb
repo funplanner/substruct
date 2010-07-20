@@ -1,4 +1,7 @@
-require File.dirname(__FILE__) + '/../test_helper'
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class VariationTest < ActiveSupport::TestCase
   # If the model was inherited from another model, the fixtures must be the
@@ -55,7 +58,7 @@ class VariationTest < ActiveSupport::TestCase
     assert a_variation.save
     
     # Verify if a default date is beeing assigned to date_available.
-    assert_equal a_variation.date_available, Date.today
+    assert_equal a_variation.date_available, Date.today.to_time
   end
 
 
@@ -98,23 +101,23 @@ class VariationTest < ActiveSupport::TestCase
     a_variation = Variation.new
     a_variation.product = items(:the_stuff)
     assert !a_variation.valid?
-    assert a_variation.errors.invalid?(:code)
+    assert a_variation.errors[:code].any?
 
 #    # TODO: A variation cannot be considered to having a valid name just because it is associated with a product.
-#    assert a_variation.errors.invalid?(:name)
+#    assert a_variation.errors[:name].any?
 
     # A variation must have a code and a name.
-    assert_equal "can't be blank", a_variation.errors.on(:code)
+    assert_equal ["can't be blank"], a_variation.errors[:code]
 
 #    # TODO: If the name wasn't specified it should say it.
-#    assert_equal "can't be blank", a_variation.errors.on(:name)
+#    assert_equal ["can't be blank"], a_variation.errors[:name]
 
     # Choosing an already taken variation code.
     a_variation.code = "STUFF"
     assert !a_variation.valid?
-    assert a_variation.errors.invalid?(:code)
+    assert a_variation.errors[:code].any?
     # A variation must have an unique code.
-    assert_equal "has already been taken", a_variation.errors.on(:code)
+    assert_equal ["has already been taken"], a_variation.errors[:code]
 
     assert !a_variation.save
   end

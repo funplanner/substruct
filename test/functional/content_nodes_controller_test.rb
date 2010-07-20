@@ -1,4 +1,7 @@
-require File.dirname(__FILE__) + '/../test_helper'
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class ContentNodesControllerTest < ActionController::TestCase
   fixtures :content_nodes, :sections
@@ -22,7 +25,7 @@ class ContentNodesControllerTest < ActionController::TestCase
     get :show_by_name, :name => a_content_node.name
     assert_response :success
     assert_equal assigns(:title), a_content_node.title
-    assert_template 'show_by_name'
+    assert_template 'content_nodes/show_by_name'
     assert_not_nil assigns(:content_node)
     
     # Assert the content node is being shown.
@@ -54,7 +57,7 @@ class ContentNodesControllerTest < ActionController::TestCase
     
     get :show_snippet, :name => a_content_node.name
     assert_response :success
-    assert_template 'show_snippet'
+    assert_template 'content_nodes/show_snippet'
     assert_not_nil assigns(:content_node)
     
     # Assert the content node is being shown.
@@ -67,7 +70,7 @@ class ContentNodesControllerTest < ActionController::TestCase
     get :index
     assert_response :success
     assert_equal assigns(:title), "Blog"
-    assert_template 'index.rhtml'
+    assert_template 'content_nodes/index'
     assert_not_nil assigns(:content_nodes)
     
     # Assert the blog posts are being shown.
@@ -79,8 +82,8 @@ class ContentNodesControllerTest < ActionController::TestCase
   def test_index_rss
     get :index, :format => 'rss'
     assert_response_rss
-    assert_template 'index.rxml'
-    assert assigns(:content_nodes).size > 0
+    assert_template 'content_nodes/index'
+    assert Blog.count, assigns(:content_nodes).count
   end
   
   # Test the list by section action.
@@ -90,7 +93,7 @@ class ContentNodesControllerTest < ActionController::TestCase
     get :list_by_section, :section_name => a_section.name
     assert_response :success
     assert_equal assigns(:title), "Blog entries for #{a_section.name}"
-    assert_template 'index'
+    assert_template 'content_nodes/index'
     assert_not_nil assigns(:content_nodes)
     
     # Assert the blog posts are being shown.

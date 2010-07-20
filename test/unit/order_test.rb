@@ -1,4 +1,7 @@
-require File.dirname(__FILE__) + '/../test_helper'
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class OrderTest < ActiveSupport::TestCase
   fixtures(
@@ -77,18 +80,17 @@ class OrderTest < ActiveSupport::TestCase
   end
   
   def test_destroy_old_carts
+    old_cart_count = Order.count
     # Make an old, empty CART item
-    old_cart = Order.new(
+    old_cart = Order.create(
       :order_status_code => order_status_codes(:cart),
       :product_cost => 0,
       :created_on => Time.now - 1.day
     )
-    assert old_cart.save
-    old_cart_id = old_cart.reload.id
-    assert_difference "Order.count", -1 do
-      Order.destroy_old_carts
-    end
-    assert_nil Order.find_by_id(old_cart_id)
+    assert old_cart_count+1, Order.count
+
+    Order.destroy_old_carts
+    assert old_cart_count, Order.count
   end
 
 
@@ -97,9 +99,9 @@ class OrderTest < ActiveSupport::TestCase
 #    # TODO: By now theres no way to make an order invalid, it accepts any blank values and saves it.
 #    an_order = Order.new
 #    assert !an_order.valid?
-#    assert an_order.errors.invalid?(:order_number)
+#    assert an_order.errors[:order_number].any?
 #    # An order must have a number.
-#    assert_equal "can't be blank", an_order.errors.on(:order_number)
+#    assert_equal ["can't be blank"], an_order.errors[:order_number]
 #    assert !an_order.save
   end
 
@@ -448,8 +450,9 @@ class OrderTest < ActiveSupport::TestCase
     order_2.order_shipping_type = nil
     
     # Test the CSV.
+    csv_source = (RUBY_VERSION.to_f >= 1.9) ? CSV : FasterCSV 
     csv_string = Order.get_csv_for([order_1, order_2])
-    csv_array = FasterCSV.parse(csv_string)
+    csv_array = csv_source.parse(csv_string)
 
     # Test if the header is right.
     assert_equal csv_array[0], [

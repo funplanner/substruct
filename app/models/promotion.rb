@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 # Promotions allow discounts to be applied to orders, and
 # have the ability to add items to an order as well.
 #
@@ -12,6 +15,7 @@ class Promotion < ActiveRecord::Base
   has_many :orders
   belongs_to :item
 	# Validation
+  validates_with PromotionValidator  
 	validates_presence_of :code, :discount_amount, :discount_type, :description
 	validates_uniqueness_of :code
 	validates_numericality_of :discount_amount
@@ -21,13 +25,6 @@ class Promotion < ActiveRecord::Base
 	  self.code.gsub!(' ', '')
   end
   
-  # Makes sure if 'buy n get one free' discount type that
-  # a product is selected.
-  def validate
-    if self.discount_type == 2 && self.item_id.nil?
-      errors.add(:item_id, "Please add an item for the 'Buy [n] get 1 free' promotion")
-    end
-  end
 	
 	# Generates a 15 character alphanumeric code
 	# that we use to track affiliates and promotions.
@@ -57,10 +54,8 @@ class Promotion < ActiveRecord::Base
 	# Lets us know if any promotions are active.
 	#
 	def self.any_active?
-	  !Promotion.find(
-	    :first, 
-	    :conditions => "NOW() BETWEEN start AND end"
-	  ).nil?
+   time_now = Time.current.to_s(:db) 
+   Promotion.where("start < ?",time_now).where("end > ?",time_now).count > 0
   end
   
   def is_active?

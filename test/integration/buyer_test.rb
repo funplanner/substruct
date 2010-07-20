@@ -1,4 +1,7 @@
-require File.dirname(__FILE__) + '/../test_helper'
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class BuyerTest < ActionController::IntegrationTest
   fixtures :all
@@ -177,16 +180,11 @@ class BuyerTest < ActionController::IntegrationTest
     url_for_download = url_for(
       :controller => 'customers',
       :action => 'download_for_order',
-      :params => {
-        :order_number => assigns(:order).order_number,
-        :download_id => assigns(:order).downloads.first.id
-      },
+      :order_number => assigns(:order).order_number,
+      :download_id => assigns(:order).downloads.first.id,
       :only_path => true
     )
-    assert_tag :tag => "a", 
-      :attributes => { 
-        :href => ERB::Util::html_escape(url_for_download)
-      }
+    assert_tag :tag => "a", :attributes => { :href => url_for_download }
     
     # Download file
     get url_for_download

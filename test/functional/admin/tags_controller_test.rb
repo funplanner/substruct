@@ -1,4 +1,7 @@
-require File.dirname(__FILE__) + '/../../test_helper'
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
+require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 
 class Admin::TagsControllerTest < ActionController::TestCase
   fixtures :rights, :roles, :users

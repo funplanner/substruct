@@ -1,12 +1,7 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 class Product < Item
-  # Conditions that the product is in stock, or available 
-  # and just out of stock.
-  CONDITIONS_AVAILABLE = %Q/
-      CURRENT_DATE() >= DATE(items.date_available)
-      AND items.is_discontinued = 0
-      OR (items.is_discontinued = 1 AND (items.quantity > 0 OR items.variation_quantity > 0))
-  /
-
   has_many :product_images, :dependent => :destroy
   has_many :images, 
     :through => :product_images, :order => "-product_images.rank DESC",
@@ -37,6 +32,11 @@ class Product < Item
   end
   
 	has_and_belongs_to_many :tags
+
+  def self.available
+    where("date_available <= ?",Time.now.to_s(:db)).
+      where("is_discontinued = 0 OR (items.is_discontinued = 1 AND (items.quantity > 0 OR items.variation_quantity > 0))")
+  end
 
   #############################################################################
   # CALLBACKS
@@ -71,20 +71,10 @@ class Product < Item
 	  end
 	end
 
-	# Finds products by list of tag ids passed in
-	#
-	# We could JOIN multiple times, but selecting IN grabs us the products
-	# and using GROUP BY & COUNT with the number of tag id's given
-	# is a faster approach according to freenode #mysql
-	def self.find_by_tags(tag_ids, find_available=false, order_by="items.date_available DESC")
-		sql =  "SELECT * "
-		sql << "FROM items "
-		sql << "JOIN products_tags on items.id = products_tags.product_id "
-		sql << "WHERE products_tags.tag_id IN (#{tag_ids.join(",")}) "
-		sql << "AND #{CONDITIONS_AVAILABLE}" if find_available==true
-		sql << "GROUP BY items.id HAVING COUNT(*)=#{tag_ids.length} "
-		sql << "ORDER BY #{order_by};"
-		find_by_sql(sql)
+	# Finds products that match ALL tag ids passed in
+	def self.find_by_tags(tag_ids, find_available=false, order_by="date_available DESC")
+    all_tagged = Tag.find(tag_ids).map(&:product_ids).flatten
+    Product.find(all_tagged.uniq.collect{|t| t if all_tagged.count(t)==tag_ids.length}.reject(&:blank?))    
 	end
 	
 	#############################################################################

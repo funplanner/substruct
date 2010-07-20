@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 class Admin::ContentNodesController < Admin::BaseController
   include Pagination
   before_filter :set_sections
@@ -153,7 +156,6 @@ class Admin::ContentNodesController < Admin::BaseController
     def set_recent_uploads
       @recent_uploads = UserUpload.find(
         :all,
-        :conditions => "thumbnail IS NULL",
         :order => 'created_on DESC',
         :limit => 9
       )
@@ -175,7 +177,7 @@ class Admin::ContentNodesController < Admin::BaseController
           end
           @content_node.content = @content_node.content.gsub(
             "[file#{files_saved}]",
-            new_file.public_filename
+            new_file.upload.url
           )
           #@content_node.content.gsub!("[file#{files_saved}]", new_file.public_filename)
         end

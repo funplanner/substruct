@@ -10,10 +10,8 @@
               dl.product.name,
               :controller => 'customers',
               :action => 'download_for_order',
-              :params => {
-                :order_number => @order.order_number,
-                :download_id => dl.id
-              }
+              :order_number => @order.order_number,
+              :download_id => dl.id
             )
           %>
         </li>

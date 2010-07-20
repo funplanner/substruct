@@ -54,7 +54,7 @@
 <div id="right">
   <h4>View Payments for Date</h4>
 
-  <% form_tag(:action => 'list_payments') do %>
+  <%= form_tag(:action => 'list_payments') do %>
     <p>
       <%= select_date(Date.today, {}, {}) %>
     </p>

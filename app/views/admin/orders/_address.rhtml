@@ -50,9 +50,7 @@
       show_obsolete ||= false
 		%>
 		<%= make_label('Country') %>
-		<%= render_component(:controller => "countries",
-		                      :action => show_obsolete ? "complete_select_list" : "select_list",
-		                      :params => {:select_name => "#{address_type}_address", :selected => selected_country}) %>
+		<%= render :partial=>"/countries/#{show_obsolete ? 'complete_select_list' : 'select_list'}", :locals=>{:select_name => "#{address_type}_address", :selected => selected_country} %>		
 	</div>
 	<div class="clear">&nbsp;</div>
 

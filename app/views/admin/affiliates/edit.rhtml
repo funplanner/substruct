@@ -1,7 +1,7 @@
 <div id="left">
   <%= render :partial => 'subnav' %>
 
-	<% form_tag(:action => 'update', :id => @affiliate) do %>
+	<%= form_tag(:action => 'update', :id => @affiliate) do %>
 		<%= render(:partial => 'form') %>
 		<div class="line">&nbsp;</div>
 

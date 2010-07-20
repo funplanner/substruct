@@ -1,14 +1,6 @@
 <div id="left">
   <h2><%= @title %></h2>
-	<%= 
-	  render_component(
-	    :controller => "content_nodes",
-	    :action => "show_snippet",
-      :params => {
-        :name => 'AffiliateTermsAndConditions'
-      }
-    ) 
-  %>
+	<%= get_markdown Snippet.find_by_name('AffiliateTermsAndConditions').content %>
 </div>
 
 <%= render :partial => 'sidebar' %>

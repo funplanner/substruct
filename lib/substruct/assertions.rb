@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 ### Custom assertions for test cases ####
 module Substruct
   module Assertions
@@ -17,7 +20,7 @@ module Substruct
 
     # Assertion to test layout for controllers
     def assert_layout(layout)
-      assert_equal "layouts/#{layout}", @response.layout
+      assert_equal "layouts/#{layout}", @template.layout
     end
 
 
@@ -40,7 +43,7 @@ module Substruct
       arguments.each {|a| obj[a] = nil}
       assert !obj.valid?, "Object was valid when it shouldn't be."
       arguments.each do |a| 
-        assert obj.errors.invalid?(a), "#{obj.class} valid with '#{a}' nil when it shouldn't be."
+        assert obj.errors[a].any?, "#{obj.class} valid with '#{a}' nil when it shouldn't be."
       end
     end
 
@@ -63,32 +66,32 @@ module Substruct
 
     def assert_response_xml
       assert_response :success
-      assert_equal 'application/xml; charset=utf-8', @response.headers['type']
+      assert_equal 'application/xml; charset=utf-8', @response.headers['Content-Type']
     end
     
     def assert_response_rss
       assert_response :success
-      assert_equal 'application/rss+xml; charset=utf-8', @response.headers['type']
+      assert_equal 'application/rss+xml; charset=utf-8', @response.headers['Content-Type']
     end
     
     def assert_response_js
       assert_response :success
-      assert_equal 'text/javascript; charset=utf-8', @response.headers['type']
+      assert_equal 'text/javascript; charset=utf-8', @response.headers['Content-Type']
     end
     
     def assert_response_pdf
       assert_response :success
-      assert_equal 'application/pdf', @response.headers['type']
+      assert_equal 'application/pdf', @response.headers['Content-Type']
     end
     
     def assert_response_json
       assert_response :success
-      assert_equal 'application/json; charset=utf-8', @response.headers['type']
+      assert_equal 'application/json; charset=utf-8', @response.headers['Content-Type']
     end
   
     def assert_response_csv
       assert_response :success
-      assert_equal 'text/csv', @response.headers['type']
+      assert_equal 'text/csv', @response.headers['Content-Type']
     end
     
   end

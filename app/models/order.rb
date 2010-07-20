@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 class Order < ActiveRecord::Base  
   # Associations
   has_many :order_line_items, :dependent => :destroy
@@ -69,7 +72,8 @@ class Order < ActiveRecord::Base
     return true
   end
   
-  def before_save
+  before_save :do_before_save
+  def do_before_save
     set_product_cost
     cleanup_promotion
   end
@@ -155,11 +159,8 @@ class Order < ActiveRecord::Base
   
   # Removes any empty CARTS that are older than a day
   def self.destroy_old_carts
-    Order.destroy_all(%Q\
-      order_status_code_id = 1 
-      AND DATE(created_on) < CURRENT_DATE 
-      AND product_cost = 0
-    \)
+    old_carts = Order.where("order_status_code_id = 1").where("product_cost = 0").where( "created_on < ?",Time.now-1.day )
+    Order.destroy old_carts.map(&:id)
   end
 
   # Generates a unique order number.
@@ -202,8 +203,14 @@ class Order < ActiveRecord::Base
 
   # Gets a CSV string that represents an order list.
   def self.get_csv_for(order_list)
-    require 'fastercsv'
-    csv_string = FasterCSV.generate do |csv|
+    if (RUBY_VERSION.to_f >= 1.9)
+      require 'csv'
+      csv_source = CSV
+    else
+      require 'fastercsv'
+      csv_source = FasterCSV
+    end
+    csv_string = csv_source.generate do |csv|
       # Do header generation 1st
       csv << [
         "OrderNumber", "Company", "ShippingType", "Date", 
@@ -388,6 +395,7 @@ class Order < ActiveRecord::Base
         
     # Assign proper promotion
     self.promotion = promo
+    self.save(:validate=>false) # Rubyjedi: PERSIST IT so this promotion value is not lost!
     
     # Add any line items necessary from promotion.
     oli = OrderLineItem.new
@@ -729,7 +737,7 @@ class Order < ActiveRecord::Base
     elsif cc_processor == Preference::CC_PROCESSORS[1]
       run_transaction_paypal_ipn
     else
-      throw "The currently set preference for cc_processor is not recognized. You might want to add it to the code..."
+      throw "The currently set preference for cc_processor is not recognized. You might want to add it to the code...".to_sym
     end
   end
  
@@ -954,7 +962,7 @@ class Order < ActiveRecord::Base
   def deliver_receipt
     @content_node = ContentNode.find(:first, :conditions => ["name = ?", 'OrderReceipt'])
     if @content_node
-      OrdersMailer.deliver_receipt(self, @content_node.content)
+      OrdersMailer.receipt(self, @content_node.content).deliver
     else
       logger.error("The system didn't found a content node record named \"OrderReceipt\", this record " +
       "is used in the e-mail body. The e-mail deliver cannot proceed.")
@@ -963,7 +971,7 @@ class Order < ActiveRecord::Base
 
   # If we're going to define deliver_receipt here, why not wrap deliver_failed as well?
   def deliver_failed
-    OrdersMailer.deliver_failed(self)
+    OrdersMailer.failed(self).deliver
   end
 
   # Is a discount present?

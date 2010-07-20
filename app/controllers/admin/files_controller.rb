@@ -1,6 +1,6 @@
-#
-#
-#
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 class Admin::FilesController < Admin::BaseController
 
   # Lists all assets / file uploads in the system.
@@ -8,7 +8,7 @@ class Admin::FilesController < Admin::BaseController
     @title = "List of user uploaded files"
     
     if params[:sort] == 'name' then
-      sort = "filename ASC"
+      sort = "upload_file_name ASC"
     else
       sort = "created_on DESC"
     end
@@ -20,14 +20,14 @@ class Admin::FilesController < Admin::BaseController
       @files = UserUpload.paginate(
         :order => sort,
         :page => params[:page],
-        :conditions => ["type = ? and thumbnail is NULL", @viewing_by],
+        :conditions => ["type = ?", @viewing_by],
         :per_page => 30
       )
     else
       @files = UserUpload.paginate(
         :order => sort,
         :page => params[:page],
-        :conditions => "thumbnail is NULL",
+        # :conditions => "thumbnail is NULL", ## FIXME: Maybe reintroduce this as :conditions=>"type != 'Image' ? ##
         :per_page => 30
       )
     end

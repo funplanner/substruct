@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 class Admin::UsersController < Admin::BaseController
   
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)

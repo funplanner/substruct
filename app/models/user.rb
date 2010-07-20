@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 require 'digest/sha1'
 
 # this model expects a certain database layout and its based on the name/login pattern. 
@@ -7,23 +10,11 @@ class User < ActiveRecord::Base
 	before_create :crypt_password
   before_update :crypt_unless_empty
 	
+  validates_with UserValidator
 	validates_uniqueness_of :login, :on => :create
   validates_length_of :login, :within => 3..40
 	validates_presence_of :login
-	
-	def validate
-	  if (self.new_record? || (!self.password.blank? && !self.password_confirmation.blank?))  
-	    if (5 > self.password.length || 40 < self.password.length)
-        errors.add(:password, " must be between 5 and 40 characters.")
-      end
-    end
-    
-    # check presence of password & matching if they both aren't blank
-  	if (self.password != self.password_confirmation) then
-  		errors.add(:password, " and confirmation don't match.")
-  	end
-  end
-	
+  
   @@salt = '20ac4d290c2293702c64b3b287ae5ea79b26a5c1'
   cattr_accessor :salt
 	attr_accessor :password_confirmation

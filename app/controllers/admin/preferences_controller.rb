@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
 # Handles preferences setting.
 #
 # - Shipping price matrix
@@ -65,6 +68,7 @@ class Admin::PreferencesController < Admin::BaseController
   end
   def add_new_rate_ajax
     shipping_type = OrderShippingType.create(params[:shipping_type])
+    response.content_type = 'text/html'
     render(:partial => 'shipping_type', :locals => {:shipping_type => shipping_type})
   end
   def remove_shipping_type_ajax
@@ -74,7 +78,7 @@ class Admin::PreferencesController < Admin::BaseController
     )
     @type.destroy if @type
     # Render nothing to denote success
-    render :text => ""
+    render :text => "", :layout=>false
   end
   # Simply renders the weight variation ajax partial.
   # Gets passed container to render into.
@@ -103,7 +107,7 @@ class Admin::PreferencesController < Admin::BaseController
 	def remove_shipping_variation_ajax
 	  @v = OrderShippingWeight.find(:first, :conditions => ["id = ?", params[:id]])
 	  @v.destroy if @v
-	  render :nothing => 'true'
+	  render :text=>"", :layout=>false
   end
   
   # Send a test email

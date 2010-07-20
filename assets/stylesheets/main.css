@@ -279,7 +279,7 @@ div.price {
 /* This is used on anchors as well as button objects, so some css trickery is needed */
 .button, .buttonWarning {
 	background-color: #046c82;
-	background-image: url(/plugin_assets/substruct/images/public-ui/buttons/bg.gif) !important;
+	background-image: url(/images/public-ui/buttons/bg.gif) !important;
 	background-repeat: repeat-x;
 	border: 2px solid #000;
 	font-size: 15px;
@@ -355,7 +355,7 @@ div.listContainer .list {
 .list th, .list tr.header td, .list td.header {
 	font-weight: bold;
 	background-color: #777777;
-	background-image:url(/plugin_assets/substruct/images/table_header_bg.png);
+	background-image:url(/images/table_header_bg.png);
 	color: #eeeeee;
 	border-bottom: 1px solid #666666;
 	border-right: 1px solid #666666;
@@ -440,7 +440,7 @@ div.floatTri {
 	float: left;
 	width: 31%;
 	margin-right: 20px;
-	background-image: url(/plugin_assets/substruct/images/public-ui/column-fade-middle.gif);
+	background-image: url(/images/public-ui/column-fade-middle.gif);
 	background-repeat: repeat-x;
 }
 div.floatTri h2 {
@@ -464,14 +464,14 @@ div.floatTri form {
 
 .floatTri .left {
 	float: left;
-	background-image: url(/plugin_assets/substruct/images/public-ui/column-fade-left.gif);
+	background-image: url(/images/public-ui/column-fade-left.gif);
 	background-repeat: no-repeat;
 	width: 10px;
 	height: 150px;
 }
 .floatTri .right {
 	float: right;
-	background-image: url(/plugin_assets/substruct/images/public-ui/column-fade-right.gif);
+	background-image: url(/images/public-ui/column-fade-right.gif);
 	background-repeat: no-repeat;
 	width: 10px;
 	height: 150px;
@@ -488,7 +488,7 @@ div.floatTri form {
 	padding-top: 0px;
 }
 
-.fieldWithErrors input, .fieldWithErrors * option, .fieldWithErrors * {
+.field_with_errors input, .field_with_errors * option, .field_with_errors * {
   background-color: #dddddd;
 }
 
@@ -563,7 +563,7 @@ input.error {
 	font-size: 18px;
 	line-height: 28px;
 	padding-top: 7px;
-	background-image: url(/plugin_assets/substruct/images/public-ui/input-bg.gif);
+	background-image: url(/images/public-ui/input-bg.gif);
 	background-repeat: repeat-x;
 }
 
@@ -582,7 +582,7 @@ input.error {
 .form_block {
 	margin: 10px 0px 20px 0px;
 	padding: 20px;
-	background-image: url(/plugin_assets/substruct/images/public-ui/column-fade-middle.gif);
+	background-image: url(/images/public-ui/column-fade-middle.gif);
 	background-repeat: repeat-x;
 	border-top: 2px solid #ccc;
 }
@@ -594,7 +594,7 @@ input.error {
 }
 .blog_entry.even {
 	background-color: transparent;
-	background-image: url(/plugin_assets/substruct/images/public-ui/column-fade-middle.gif);
+	background-image: url(/images/public-ui/column-fade-middle.gif);
 }
 
 /* PRODUCT 'CHIPS' */
@@ -602,19 +602,19 @@ input.error {
 	width: 150px;
 	margin-right: 5px;
 	float: left;
-	background-image: url(/plugin_assets/substruct/images/public-ui/item-middle.gif);
+	background-image: url(/images/public-ui/item-middle.gif);
 	background-repeat: repeat-y;
 }
 .product_top {
 	width: 150px;
 	height: 10px;
-	background-image: url(/plugin_assets/substruct/images/public-ui/item-top.gif);
+	background-image: url(/images/public-ui/item-top.gif);
 	background-repeat: no-repeat;
 }
 .product_bottom {
 	width: 150px;
 	height: 20px;
-	background-image: url(/plugin_assets/substruct/images/public-ui/item-bottom.gif);
+	background-image: url(/images/public-ui/item-bottom.gif);
 	background-repeat: no-repeat;
 }
 .product_main {
@@ -832,7 +832,7 @@ div.p * {
 
 #navigation {
 	margin-top: 5px;
-	background-image: url(/plugin_assets/substruct/images/public-ui/nav-middle-bg.gif);
+	background-image: url(/images/public-ui/nav-middle-bg.gif);
 	background-repeat: repeat-x;
 	height: 60px;
 	overflow: hidden;
@@ -843,14 +843,14 @@ div.p * {
 	float: left;
 	width: 10px;
 	height: 60px;
-	background-image: url(/plugin_assets/substruct/images/public-ui/nav-endcap-left.gif);
+	background-image: url(/images/public-ui/nav-endcap-left.gif);
 	background-repeat: no-repeat;
 }
 #navcap_right {
 	float: right;
 	width: 10px;
 	height: 60px;
-	background-image: url(/plugin_assets/substruct/images/public-ui/nav-endcap-right.gif);
+	background-image: url(/images/public-ui/nav-endcap-right.gif);
 	background-repeat: no-repeat;
 }
 
@@ -882,12 +882,12 @@ div.p * {
 	white-space: nowrap;
 }
 #navigation ul.navigation li.active {
-	background-image: url(/plugin_assets/substruct/images/public-ui/nav-tab-left.gif);
+	background-image: url(/images/public-ui/nav-tab-left.gif);
 	font-size: 1em;
 }
 
 #navigation ul.navigation li.active a{
-	background-image: url(/plugin_assets/substruct/images/public-ui/nav-tab-right.gif);
+	background-image: url(/images/public-ui/nav-tab-right.gif);
 	color: #3b3b3b;
 	font-style: italic;
 	font-size: 1.8em;
@@ -899,7 +899,7 @@ div.p * {
 #subnavigation {
 	height: 40px;
 	background-color: #d0c8c8;
-	background-image: url(/plugin_assets/substruct/images/public-ui/subnav-bg.gif);
+	background-image: url(/images/public-ui/subnav-bg.gif);
 	margin-left: 10px;
 	margin-right: 10px;
 }
@@ -915,14 +915,14 @@ div.p * {
 	display: block;
 }
 #subnavigation ul.navigation li.active {
-	background-image: url(/plugin_assets/substruct/images/public-ui/subnav-tab-left.gif);
+	background-image: url(/images/public-ui/subnav-tab-left.gif);
 	background-repeat: no-repeat;
 	font-size: 1em;
 	margin-right: 0px;
 }
 
 #subnavigation ul.navigation li.active a{
-	background-image: url(/plugin_assets/substruct/images/public-ui/subnav-tab-right.gif);
+	background-image: url(/images/public-ui/subnav-tab-right.gif);
 	background-position: top right;
 	background-repeat: no-repeat;
 	font-style: italic;
@@ -959,7 +959,7 @@ h1#new_sale_header {
 	height: 180px;
 	padding-top: 20px;
 	text-align:center; 
-	background-image: url(/plugin_assets/substruct/images/public-ui/new-sale-header-bg.gif);
+	background-image: url(/images/public-ui/new-sale-header-bg.gif);
 	background-repeat: no-repeat;
 	float: left;
 	margin: 0px;

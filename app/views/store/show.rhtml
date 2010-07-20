@@ -9,9 +9,9 @@
   </ul>
 	<% if @default_image %>
 		<div style="float:left; margin:20px; width: 200px;">
-      <% if @default_image.public_filename(:small) then %>
-        <a href="<%= @default_image.public_filename %>" class="submodal-800-400">
-          <%= image_tag @default_image.public_filename(:small) %>
+      <% if @default_image.upload.url(:small) then %>
+        <a href="<%= @default_image.upload.url(:small) %>" class="submodal-800-400">
+          <%= image_tag @default_image.upload.url(:small) %>
         </a>
       <% end %>
 			<p class="info">Click to see full view</p>
@@ -21,8 +21,8 @@
 				<% for @p_image in @images do %>
 					<!-- product image for reordering -->
 					<div class="float" style="margin:5px;">
-					  <% if @p_image.public_filename(:thumb) then %>
-              <a href="<%= @p_image.public_filename %>" class="submodal-800-400"><%= image_tag @p_image.public_filename(:thumb) %></a>
+					  <% if @p_image.upload.url(:thumb) then %>
+              <a href="<%= @p_image.upload.url %>" class="submodal-800-400"><%= image_tag @p_image.upload.url(:thumb) %></a>
             <% end %>
 					</div>
 				<% end %>

@@ -1,4 +1,7 @@
-require File.dirname(__FILE__) + '/../test_helper'
+# encoding: UTF-8
+# Source Code Modifications (c) 2010 Laurence A. Lee, 
+# See /RUBYJEDI.txt for Licensing and Distribution Terms
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class PromotionCheckoutTest < ActionController::IntegrationTest
   fixtures :all
@@ -14,7 +17,7 @@ class PromotionCheckoutTest < ActionController::IntegrationTest
   def test_promo_minimum_cart_value    
     assert @promo.minimum_cart_value > @inexpensive_item.price
     post 'store/add_to_cart', :id => @inexpensive_item.id
-    assert_redirected_to 'store/checkout'
+    assert_redirected_to '/store/checkout'
     assert_equal assigns(:order).items.length, 1
     
     perform_successful_checkout()
@@ -136,7 +139,7 @@ class PromotionCheckoutTest < ActionController::IntegrationTest
       xml_http_request(:post, 'store/add_to_cart_ajax', {:id => @expensive_item.id})
       assert_response :success
       post 'store/add_to_cart', :id => @inexpensive_item.id
-      assert_redirected_to 'store/checkout'
+      assert_redirected_to '/store/checkout'
       assert_equal assigns(:order).items.length, 2   
     end
 end

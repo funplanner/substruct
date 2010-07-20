@@ -10,7 +10,7 @@
 
 body {
 	background-color: #909090;
-	background-image: url(/plugin_assets/substruct/images/public/background.png);
+	background-image: url(/images/public/background.png);
 }
 
 body, table, div, td, input, textarea {
@@ -159,36 +159,36 @@ div.line {
 	width: 879px;
 	margin: 0 auto;
 	height: 100%;
-	background-image: url(/plugin_assets/substruct/images/public/body_background.png);
+	background-image: url(/images/public/body_background.png);
 }
 
 #header {
 	width: 879px;
 	height: 79px;
-	background-image: url(/plugin_assets/substruct/images/public/header_background_logo.png);
+	background-image: url(/images/public/header_background_logo.png);
 	background-repeat: no-repeat;
 }
 /* Div that comes before the content */
 #preContent {
 	height: 83px;
-	background-image: url(/plugin_assets/substruct/images/public/body_background_top.png);
+	background-image: url(/images/public/body_background_top.png);
 	background-repeat: no-repeat;
 }
 #contentBody {
 	width: 879px;
-	background-image: url(/plugin_assets/substruct/images/public/body_background.png);
+	background-image: url(/images/public/body_background.png);
 	padding: 0px;
 	clear:both;
 }
 /* 2 column layout */
 #preContent.twoColumn {
-	background-image: url(/plugin_assets/substruct/images/public/body_background_top2.png);
+	background-image: url(/images/public/body_background_top2.png);
 }
 #contentBody.twoColumn {
-	background-image: url(/plugin_assets/substruct/images/public/body_background_2.png);
+	background-image: url(/images/public/body_background_2.png);
 }
 #container.twoColumn {
-	background-image: url(/plugin_assets/substruct/images/public/body_background_2.png);
+	background-image: url(/images/public/body_background_2.png);
 }
 /* end 2 column */
 
@@ -240,14 +240,14 @@ div.line {
 }
 
 #navigation ul.navigation li {
-	background-image: url(/plugin_assets/substruct/images/admin/tab-left.gif);
+	background-image: url(/images/admin/tab-left.gif);
 	line-height: 40px;
 	height: 40px;
 	background-repeat: no-repeat;
 }
 
 #navigation ul.navigation li a{
-	background-image: url(/plugin_assets/substruct/images/admin/tab-right.gif);
+	background-image: url(/images/admin/tab-right.gif);
 	line-height: 40px;
 	height: 40px;
 	background-position: top right;
@@ -261,12 +261,12 @@ div.line {
 	white-space: nowrap;
 }
 #navigation ul.navigation li.active {
-	background-image: url(/plugin_assets/substruct/images/admin/active-tab-left.gif);
+	background-image: url(/images/admin/active-tab-left.gif);
 	font-size: 1em;
 }
 
 #navigation ul.navigation li.active a{
-	background-image: url(/plugin_assets/substruct/images/admin/active-tab-right.gif);
+	background-image: url(/images/admin/active-tab-right.gif);
 	color: #333333;
 	font-style:normal;
 	font-weight: bold;
@@ -366,7 +366,7 @@ ul.sortable li p {
 .button, .buttonWarning {
 	background-color: #00157F;
 	background-color: #000a79;
-	background-image: url(/plugin_assets/substruct/images/button_bg.gif) !important;
+	background-image: url(/images/button_bg.gif) !important;
 	background-repeat: repeat-x;
 	background-position: top left;
 	border: 2px solid #000;
@@ -447,7 +447,7 @@ div.listContainer .list {
 .list th, .list tr.header td, .list td.header {
 	font-weight: bold;
 	background-color: #777777;
-	background-image:url(/plugin_assets/substruct/images/table_header_bg.png);
+	background-image:url(/images/table_header_bg.png);
 	color: #eeeeee;
 	border-bottom: 1px solid #666666;
 	border-right: 1px solid #666666;
@@ -539,7 +539,7 @@ div.padLeft {
 
 /* FORMS =================================================================== */
 
-.fieldWithErrors input, .fieldWithErrors * option, .fieldWithErrors * {
+.field_with_errors input, .field_with_errors * option, .field_with_errors * {
   background-color: #dddddd;
 }
 
@@ -717,21 +717,21 @@ div.p * {
 
 body {
 	background-color: #36005b;
-	background-image: url(/plugin_assets/substruct/images/admin/body-bg.gif);
+	background-image: url(/images/admin/body-bg.gif);
 	background-repeat: repeat-x;
 }
 
 #container {
 	width: 960px;
 	background-color: #ffffff;
-	background-image: url(/plugin_assets/substruct/images/admin/content-bg.gif);
+	background-image: url(/images/admin/content-bg.gif);
 	border: 2px solid #000;
 	border-top: 0px;
 	padding: 0px;
 	padding-bottom: 20px;
 }
 #header {
-	background-image: url(/plugin_assets/substruct/images/admin/header-bg.gif);
+	background-image: url(/images/admin/header-bg.gif);
 	background-repeat: repeat-x;
 	height: 150px;
 	margin-bottom: 20px;
@@ -739,7 +739,7 @@ body {
 }
 #logo {
 	position: absolute;
-	background-image: url(/plugin_assets/substruct/images/admin/header-bg-logo.gif);
+	background-image: url(/images/admin/header-bg-logo.gif);
 	background-repeat: no-repeat;
 	height: 150px;
 	width: 380px;

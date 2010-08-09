@@ -1,6 +1,3 @@
-# encoding: UTF-8
-# Source Code Modifications (c) 2010 Laurence A. Lee, 
-# See /RUBYJEDI.txt for Licensing and Distribution Terms
 # This file is auto-generated from the current state of the database. Instead of editing this file, 
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
@@ -12,13 +9,19 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100210194537) do
+ActiveRecord::Schema.define(:version => 10010) do
 
   create_table "affiliate_payments", :force => true do |t|
+    t.string   "number"
+    t.string   "string"
     t.datetime "created_at"
+    t.datetime "datetime"
     t.integer  "affiliate_id", :default => 0,   :null => false
+    t.integer  "integer",      :default => 0,   :null => false
     t.float    "amount",       :default => 0.0, :null => false
+    t.float    "float",        :default => 0.0, :null => false
     t.text     "notes"
+    t.text     "text"
   end
 
   create_table "affiliates", :force => true do |t|
@@ -31,14 +34,10 @@ ActiveRecord::Schema.define(:version => 20100210194537) do
     t.string   "state",         :limit => 10
     t.string   "zip",           :limit => 10
     t.string   "email_address", :limit => 50, :default => "",    :null => false
-    t.string   "tax_id"
-    t.string   "company"
+    t.string   "tax_id",        :limit => 20
+    t.string   "company",       :limit => 50
     t.boolean  "is_enabled",                  :default => false
     t.datetime "created_at"
-  end
-
-  create_table "content_node_types", :force => true do |t|
-    t.string "name", :limit => 50, :default => "", :null => false
   end
 
   create_table "content_nodes", :force => true do |t|
@@ -68,30 +67,26 @@ ActiveRecord::Schema.define(:version => 20100210194537) do
   end
 
   create_table "items", :force => true do |t|
-    t.string   "code",               :limit => 20,  :default => "",    :null => false
-    t.string   "name",               :limit => 100, :default => "",    :null => false
+    t.string   "code",               :limit => 20,  :default => "",  :null => false
+    t.string   "name",               :limit => 100, :default => "",  :null => false
     t.text     "description"
-    t.float    "price",                             :default => 0.0,   :null => false
-    t.datetime "date_available",                                       :null => false
-    t.integer  "quantity",                          :default => 0,     :null => false
-    t.float    "size_width",                        :default => 0.0,   :null => false
-    t.float    "size_height",                       :default => 0.0,   :null => false
-    t.float    "size_depth",                        :default => 0.0,   :null => false
-    t.float    "weight",                            :default => 0.0,   :null => false
+    t.float    "price",                             :default => 0.0, :null => false
+    t.datetime "date_available",                                     :null => false
+    t.integer  "quantity",                          :default => 0,   :null => false
+    t.float    "size_width",                        :default => 0.0, :null => false
+    t.float    "size_height",                       :default => 0.0, :null => false
+    t.float    "size_depth",                        :default => 0.0, :null => false
+    t.float    "weight",                            :default => 0.0, :null => false
     t.string   "type",               :limit => 40
-    t.integer  "product_id",                        :default => 0,     :null => false
-    t.boolean  "is_discontinued",                   :default => false, :null => false
-    t.integer  "variation_quantity",                :default => 0,     :null => false
+    t.integer  "product_id",                        :default => 0,   :null => false
+    t.integer  "is_discontinued",                   :default => 0,   :null => false
+    t.integer  "variation_quantity",                :default => 0,   :null => false
   end
 
-  add_index "items", ["quantity", "is_discontinued", "variation_quantity"], :name => "published"
-  add_index "items", ["product_id", "type"], :name => "variation"
   add_index "items", ["date_available", "is_discontinued", "quantity", "variation_quantity", "type"], :name => "tag_view"
   add_index "items", ["name", "code", "is_discontinued", "date_available", "quantity", "variation_quantity", "type"], :name => "search"
-
-  create_table "order_account_types", :force => true do |t|
-    t.string "name", :limit => 30, :default => "", :null => false
-  end
+  add_index "items", ["product_id", "type"], :name => "variation"
+  add_index "items", ["quantity", "is_discontinued", "variation_quantity"], :name => "published"
 
   create_table "order_accounts", :force => true do |t|
     t.integer "order_user_id",                       :default => 0, :null => false
@@ -119,8 +114,8 @@ ActiveRecord::Schema.define(:version => 20100210194537) do
     t.integer "country_id",                  :default => 0,  :null => false
   end
 
-  add_index "order_addresses", ["first_name", "last_name"], :name => "name"
   add_index "order_addresses", ["country_id", "order_user_id"], :name => "countries"
+  add_index "order_addresses", ["first_name", "last_name"], :name => "name"
 
   create_table "order_line_items", :force => true do |t|
     t.integer "item_id"
@@ -151,6 +146,7 @@ ActiveRecord::Schema.define(:version => 20100210194537) do
   add_index "order_status_codes", ["name"], :name => "name"
 
   create_table "order_users", :force => true do |t|
+    t.string   "username",      :limit => 50
     t.string   "email_address", :limit => 50, :default => "", :null => false
     t.string   "password",      :limit => 20
     t.datetime "created_on"
@@ -182,10 +178,10 @@ ActiveRecord::Schema.define(:version => 20100210194537) do
   end
 
   add_index "orders", ["order_number"], :name => "order_number"
-  add_index "orders", ["order_user_id"], :name => "order_user_id"
   add_index "orders", ["order_status_code_id"], :name => "status"
+  add_index "orders", ["order_user_id"], :name => "order_user_id"
 
-  create_table "plugin_schema_migrations", :id => false, :force => true do |t|
+  create_table "plugin_schema_info", :id => false, :force => true do |t|
     t.string "plugin_name"
     t.string "version"
   end
@@ -203,8 +199,8 @@ ActiveRecord::Schema.define(:version => 20100210194537) do
     t.integer "rank"
   end
 
-  add_index "product_downloads", ["product_id"], :name => "pid"
   add_index "product_downloads", ["download_id"], :name => "did"
+  add_index "product_downloads", ["product_id"], :name => "pid"
 
   create_table "product_images", :force => true do |t|
     t.integer "image_id",   :default => 0, :null => false
@@ -279,13 +275,14 @@ ActiveRecord::Schema.define(:version => 20100210194537) do
   end
 
   create_table "sessions", :force => true do |t|
-    t.string   "sessid",     :default => "", :null => false
+    t.string   "session_id", :null => false
     t.text     "data"
-    t.datetime "updated_at"
     t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "sessions", ["sessid"], :name => "session_index"
+  add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
+  add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
 
   create_table "tags", :force => true do |t|
     t.string  "name",      :limit => 100, :default => "", :null => false
@@ -296,15 +293,12 @@ ActiveRecord::Schema.define(:version => 20100210194537) do
   add_index "tags", ["name"], :name => "name"
 
   create_table "user_uploads", :force => true do |t|
-    t.string   "filename"
-    t.integer  "width",        :default => 0, :null => false
-    t.integer  "height",       :default => 0, :null => false
-    t.string   "type"
-    t.datetime "created_on"
+    t.string   "upload_file_name"
+    t.string   "upload_content_type"
+    t.integer  "upload_file_size"
     t.integer  "parent_id"
-    t.string   "content_type"
-    t.string   "thumbnail"
-    t.integer  "size"
+    t.datetime "created_on"
+    t.string   "type"
   end
 
   add_index "user_uploads", ["created_on", "type"], :name => "creation"
@@ -322,7 +316,7 @@ ActiveRecord::Schema.define(:version => 20100210194537) do
     t.datetime "created_on"
   end
 
-  add_index "wishlist_items", ["order_user_id"], :name => "user"
   add_index "wishlist_items", ["item_id"], :name => "item"
+  add_index "wishlist_items", ["order_user_id"], :name => "user"
 
 end

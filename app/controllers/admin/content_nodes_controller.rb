@@ -80,7 +80,7 @@ class Admin::ContentNodesController < Admin::BaseController
     per_page = 30
     list = @section.content_nodes
     pager = Paginator.new(list, list.size, per_page, params[:page])
-    @content_nodes = returning WillPaginate::Collection.new(params[:page] || 1, per_page, list.size) do |p|
+    @content_nodes = WillPaginate::Collection.new(params[:page] || 1, per_page, list.size) do |p|
       p.replace list[pager.current.offset, pager.items_per_page]
     end
     

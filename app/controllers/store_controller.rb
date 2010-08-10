@@ -95,7 +95,7 @@ class StoreController < ApplicationController
     per_page = 10
     list = Product.find_by_tags(tag_ids_array, true)
     pager = Paginator.new(list, list.size, per_page, params[:page])
-    @products = returning WillPaginate::Collection.new(params[:page] || 1, per_page, list.size) do |p|
+    @products = WillPaginate::Collection.new(params[:page] || 1, per_page, list.size) do |p|
       p.replace list[pager.current.offset, pager.items_per_page]
     end
     

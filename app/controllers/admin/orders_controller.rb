@@ -78,7 +78,7 @@ class Admin::OrdersController < Admin::BaseController
     list = Order.search(@search_term)
     @search_count = list.size
     pager = Paginator.new(list, list.size, per_page, params[:page])
-    @orders = returning WillPaginate::Collection.new(params[:page] || 1, per_page, list.size) do |p|
+    @orders = WillPaginate::Collection.new(params[:page] || 1, per_page, list.size) do |p|
       p.replace list[pager.current.offset, pager.items_per_page]
     end
 
@@ -166,7 +166,7 @@ class Admin::OrdersController < Admin::BaseController
     list = Order.find_by_country(@country.id)
     @order_count = list.size
     pager = Paginator.new(list, list.size, per_page, params[:page])
-    @orders = returning WillPaginate::Collection.new(params[:page] || 1, per_page, list.size) do |p|
+    @orders = WillPaginate::Collection.new(params[:page] || 1, per_page, list.size) do |p|
       p.replace list[pager.current.offset, pager.items_per_page]
     end
     

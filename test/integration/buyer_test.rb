@@ -182,9 +182,9 @@ class BuyerTest < ActionController::IntegrationTest
       :action => 'download_for_order',
       :order_number => assigns(:order).order_number,
       :download_id => assigns(:order).downloads.first.id,
-      :only_path => true
+      :only_path => true 
     )
-    assert_tag :tag => "a", :attributes => { :href => url_for_download }
+    assert_tag :tag => "a", :attributes => { :href => url_for_download.gsub('&','&amp;') }
     
     # Download file
     get url_for_download

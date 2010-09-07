@@ -117,7 +117,7 @@ class AffiliatesControllerTest < ActionController::TestCase
   
   def test_orders_with_date
     login_affiliate()
-    d = Date.today.beginning_of_month - 1.month
+    d = Date.today.beginning_of_month # - 1.month
     get :orders, :date => d.to_s
     assert_equal assigns(:date), d
     assert_response :success

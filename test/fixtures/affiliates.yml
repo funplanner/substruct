@@ -9,7 +9,7 @@ joes_marketing:
   zip: 95111
   email_address: joe@joesmarketing.com
   is_enabled: true
-  created_at: <%= Date.today - 1.week %>
+  created_at: <%= Date.today.beginning_of_month %>
 
 bob_reseller: 
   code: "bobby_r"

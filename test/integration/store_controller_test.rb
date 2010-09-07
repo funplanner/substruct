@@ -179,7 +179,7 @@ class StoreControllerTest < ActionController::IntegrationTest
   # is set to any amount.
   def test_inventory_control_enabled
     setup_inventory_control()
-    assert Preference.find_by_name('store_use_inventory_control').update_attribute('value', 1)
+    Preference.find_by_name('store_use_inventory_control').update_attribute('value', 1)
     get "/store/show", :id => @product.code
     assert_response :success
     assert_select "h3#out_of_stock"
@@ -187,7 +187,7 @@ class StoreControllerTest < ActionController::IntegrationTest
     
   def test_inventory_control_disabled
     setup_inventory_control()
-    assert Preference.find_by_name('store_use_inventory_control').update_attribute('value', 0)
+    Preference.find_by_name('store_use_inventory_control').update_attribute('value', 0)
     get "/store/show", :id => @product.code
     assert_response :success
     assert_select "h3#out_of_stock", false
@@ -263,13 +263,13 @@ class StoreControllerTest < ActionController::IntegrationTest
     assert_equal 0, product.reload.quantity
 
     # Inventory control enabled
-    assert Preference.find_by_name('store_use_inventory_control').update_attribute('value', 1)
+    Preference.find_by_name('store_use_inventory_control').update_attribute('value', 1)
     xhr(:post, "/store/add_to_cart_ajax", :id => product.id, :quantity => "1")
     cart = assigns(:order)
     assert_equal 0, cart.items.length
     
     # Inventory control DISABLED
-    assert Preference.find_by_name('store_use_inventory_control').update_attribute('value', 0)
+    Preference.find_by_name('store_use_inventory_control').update_attribute('value', 0)
     xhr(:post, "/store/add_to_cart_ajax", :id => product.id, :quantity => "1")
     cart = assigns(:order)
     assert_equal 1, cart.items.length

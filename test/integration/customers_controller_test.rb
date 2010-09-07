@@ -129,6 +129,7 @@ class CustomersControllerTest < ActionController::IntegrationTest
 
   # Test the new action. Here we test if a new invalid cutomer will NOT be saved.
   def test_should_not_save_new_customer
+    Preference.find_by_name("store_require_login").update_attribute(:value,1)    
     # Call the new form.
     get "/customers/new"
     assert_response :success
@@ -150,7 +151,6 @@ class CustomersControllerTest < ActionController::IntegrationTest
     assert_select "p", :text => /There was a problem creating your account./
     assert_select "div.field_with_errors input#customer_email_address"
 
-  
     # Post to it an already existing customer.
     post "/customers/new",
     :customer => {

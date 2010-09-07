@@ -8,7 +8,7 @@ class CreateProductsTags < ActiveRecord::Migration
       t.integer :tag_id,     :limit => 11, :default => 0, :null => false
     end
   
-    add_index :products_tags, [:product_id, :tag_id], :name => :product_tags
+    add_index :products_tags, [:product_id, :tag_id], :name => "product_tags"
   end
 
   def self.down

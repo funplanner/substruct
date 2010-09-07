@@ -25,9 +25,9 @@ class CreateOrders < ActiveRecord::Migration
       t.integer  :affiliate_payment_id,   :limit => 11, :default => 0,   :null => false
     end
   
-    add_index :orders, [:order_number], :name => :order_number
-    add_index :orders, [:order_user_id], :name => :order_user_id
-    add_index :orders, [:order_status_code_id], :name => :status  
+    add_index :orders, [:order_number], :name => "order_number"
+    add_index :orders, [:order_user_id], :name => "order_user_id"
+    add_index :orders, [:order_status_code_id], name => "status"
   end
 
   def self.down

@@ -12,7 +12,7 @@ class CreateOrderUsers < ActiveRecord::Migration
       t.string   :last_name,     :limit => 50, :default => '', :null => false
     end
   
-    add_index :order_users, [:email_address], :name => :email
+    add_index :order_users, [:email_address], :name => "email"
   end
 
   def self.down

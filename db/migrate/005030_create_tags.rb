@@ -8,7 +8,7 @@ class CreateTags < ActiveRecord::Migration
       t.integer :rank,      :limit => 11
       t.integer :parent_id, :limit => 11,  :default => 0,  :null => false
     end
-    add_index :tags, [:name], :name => :name unless defined?(SQLite3)
+    add_index :tags, [:name], :name => "tag_name"
   end
 
   def self.down

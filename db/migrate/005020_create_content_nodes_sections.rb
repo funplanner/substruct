@@ -7,7 +7,7 @@ class CreateContentNodesSections < ActiveRecord::Migration
       t.integer :content_node_id, :limit => 11, :default => 0, :null => false
       t.integer :section_id,      :limit => 11, :default => 0, :null => false
     end
-    add_index :content_nodes_sections, [:content_node_id, :section_id], :name => :default
+    add_index :content_nodes_sections, [:content_node_id, :section_id], :name => "default"
   end
 
   def self.down

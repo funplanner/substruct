@@ -1,8 +1,8 @@
-# This file is auto-generated from the current state of the database. Instead 
+# This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your 
+# Note that this schema.rb definition is the authoritative source for your
 # database schema. If you need to create the application database on another
 # system, you should be using db:schema:load, not running all the migrations
 # from scratch. The latter is a flawed and unsustainable approach (the more migrations
@@ -50,8 +50,8 @@ ActiveRecord::Schema.define(:version => 10010) do
     t.string   "type",       :limit => 50,  :default => "", :null => false
   end
 
-  add_index "content_nodes", ["name"], :name => "name"
-  add_index "content_nodes", ["type", "id"], :name => "type"
+  add_index "content_nodes", ["name"], :name => "content_node_name"
+  add_index "content_nodes", ["type", "id"], :name => "content_node_type"
 
   create_table "content_nodes_sections", :id => false, :force => true do |t|
     t.integer "content_node_id", :default => 0, :null => false
@@ -115,8 +115,8 @@ ActiveRecord::Schema.define(:version => 10010) do
     t.integer "country_id",                  :default => 0,  :null => false
   end
 
-  add_index "order_addresses", ["country_id", "order_user_id"], :name => "countries"
-  add_index "order_addresses", ["first_name", "last_name"], :name => "name"
+  add_index "order_addresses", ["country_id", "order_user_id"], :name => "order_countries_idx"
+  add_index "order_addresses", ["first_name", "last_name"], :name => "order_customer_names_idx"
 
   create_table "order_line_items", :force => true do |t|
     t.integer "item_id"
@@ -144,7 +144,7 @@ ActiveRecord::Schema.define(:version => 10010) do
     t.string "name", :limit => 30, :default => "", :null => false
   end
 
-  add_index "order_status_codes", ["name"], :name => "name"
+  add_index "order_status_codes", ["name"], :name => "status_code_name"
 
   create_table "order_users", :force => true do |t|
     t.string   "username",      :limit => 50
@@ -179,7 +179,7 @@ ActiveRecord::Schema.define(:version => 10010) do
   end
 
   add_index "orders", ["order_number"], :name => "order_number"
-  add_index "orders", ["order_status_code_id"], :name => "status"
+  add_index "orders", ["order_status_code_id"], :name => "index_orders_on_order_status_code_id"
   add_index "orders", ["order_user_id"], :name => "order_user_id"
 
   create_table "plugin_schema_info", :id => false, :force => true do |t|
@@ -192,7 +192,7 @@ ActiveRecord::Schema.define(:version => 10010) do
     t.string "value", :default => ""
   end
 
-  add_index "preferences", ["name"], :name => "namevalue"
+  add_index "preferences", ["name"], :name => "preference_name"
 
   create_table "product_downloads", :force => true do |t|
     t.integer "download_id", :default => 0, :null => false
@@ -209,7 +209,7 @@ ActiveRecord::Schema.define(:version => 10010) do
     t.integer "rank"
   end
 
-  add_index "product_images", ["product_id", "image_id"], :name => "main"
+  add_index "product_images", ["product_id", "image_id"], :name => "product_images_idx"
 
   create_table "products_tags", :id => false, :force => true do |t|
     t.integer "product_id", :default => 0, :null => false
@@ -246,7 +246,7 @@ ActiveRecord::Schema.define(:version => 10010) do
     t.integer "related_id", :default => 0, :null => false
   end
 
-  add_index "related_products", ["product_id", "related_id"], :name => "related_products"
+  add_index "related_products", ["product_id", "related_id"], :name => "related_products_idx"
 
   create_table "rights", :force => true do |t|
     t.string "name"
@@ -291,7 +291,7 @@ ActiveRecord::Schema.define(:version => 10010) do
     t.integer "parent_id",                :default => 0,  :null => false
   end
 
-  add_index "tags", ["name"], :name => "name"
+  add_index "tags", ["name"], :name => "tag_name"
 
   create_table "user_uploads", :force => true do |t|
     t.string   "upload_file_name"

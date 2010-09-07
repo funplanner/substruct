@@ -14,7 +14,7 @@ class CreateOrderAccounts < ActiveRecord::Migration
       t.string  :routing_number,        :limit => 20
       t.string  :bank_name,             :limit => 50
     end
-    add_index :order_accounts, [:order_user_id, :order_account_type_id], :name => :ids    
+    add_index :order_accounts, [:order_user_id, :order_account_type_id], :name => "ids"
   end
 
   def self.down

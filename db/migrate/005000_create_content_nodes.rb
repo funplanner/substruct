@@ -11,8 +11,8 @@ class CreateContentNodes < ActiveRecord::Migration
       t.datetime :created_on,                                :null => false
       t.string   :type,       :limit => 50,  :default => "", :null => false
     end
-    add_index :content_nodes, [:name], :name => :name
-    add_index :content_nodes, [:type, :id], :name => :type    
+    add_index :content_nodes, [:name], :name => "content_node_name"
+    add_index :content_nodes, [:type, :id], :name => "content_node_type"
   end
 
   def self.down

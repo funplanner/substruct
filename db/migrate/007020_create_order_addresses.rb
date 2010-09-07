@@ -14,8 +14,8 @@ class CreateOrderAddresses < ActiveRecord::Migration
       t.string  :zip,           :limit => 10
       t.integer :country_id,    :limit => 11, :default => 0,  :null => false
     end
-    add_index :order_addresses, [:first_name, :last_name], :name => :name  unless defined?(SQLite3)
-    add_index :order_addresses, [:country_id, :order_user_id], :name => :countries  unless defined?(SQLite3)
+    add_index :order_addresses, [:first_name, :last_name], :name => "order_customer_names_idx"
+    add_index :order_addresses, [:country_id, :order_user_id], :name => "order_countries_idx"
   end
 
   def self.down

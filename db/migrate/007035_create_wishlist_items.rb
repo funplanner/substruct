@@ -9,8 +9,8 @@ class CreateWishlistItems < ActiveRecord::Migration
       t.datetime :created_on
     end
   
-    add_index :wishlist_items, [:order_user_id], :name => :user
-    add_index :wishlist_items, [:item_id], :name => :item
+    add_index :wishlist_items, [:order_user_id], :name => "user"
+    add_index :wishlist_items, [:item_id], :name => "item"
   end
 
   def self.down

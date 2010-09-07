@@ -7,7 +7,7 @@ class CreateOrderStatusCodes < ActiveRecord::Migration
       t.string :name, :limit => 30, :default => '', :null => false
     end
   
-    add_index :order_status_codes, [:name], :name => :name unless defined?(SQLite3)
+    add_index :order_status_codes, [:name], :name => "status_code_name"
   end
 
   def self.down

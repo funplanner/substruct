@@ -9,7 +9,7 @@ class CreateProductImages < ActiveRecord::Migration
     t.integer :rank,       :limit => 11
   end
 
-  add_index :product_images, [:product_id, :image_id], :name => :main
+  add_index :product_images, [:product_id, :image_id], :name => "product_images_idx"
 
   end
 

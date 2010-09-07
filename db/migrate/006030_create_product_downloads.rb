@@ -9,8 +9,8 @@ class CreateProductDownloads < ActiveRecord::Migration
     t.integer :rank,        :limit => 11
   end
 
-  add_index :product_downloads, [:product_id], :name => :pid
-  add_index :product_downloads, [:download_id], :name => :did
+  add_index :product_downloads, [:product_id], :name => "pid"
+  add_index :product_downloads, [:download_id], :name => "did"
   end
 
   def self.down

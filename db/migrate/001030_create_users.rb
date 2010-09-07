@@ -7,7 +7,7 @@ class CreateUsers < ActiveRecord::Migration
       t.string :login,    :limit => 50, :default => '', :null => false
       t.string :password, :limit => 40
     end
-    add_index :users, [:login, :password], :name => :login
+    add_index :users, [:login, :password], :name => "login"
   end
 
   def self.down

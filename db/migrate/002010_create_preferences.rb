@@ -8,7 +8,7 @@ class CreatePreferences < ActiveRecord::Migration
     t.string :value, :default => ''
   end
 
-  add_index :preferences, [:name], :name => :namevalue
+  add_index :preferences, [:name], :name => "preference_name"
   end
 
   def self.down

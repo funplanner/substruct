@@ -13,7 +13,7 @@ class CreateUserUploads < ActiveRecord::Migration
       t.string   :type # For STI Polymorph Descendants
     end
   
-    add_index :user_uploads, [:created_on, :type], :name => :creation
+    add_index :user_uploads, [:created_on, :type], :name => "creation"
   end
 
   def self.down

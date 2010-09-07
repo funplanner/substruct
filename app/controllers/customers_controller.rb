@@ -47,24 +47,20 @@ class CustomersController < ApplicationController
   # Creates a new customer
   def new
     @title = "New Account"
-    # Update account details
-    @customer = OrderUser.new
-    if request.post?
-      @customer.attributes = params[:customer]
-      if @customer.save
-        flash[:notice] = "Your account has been created."
-        log_customer_in(@customer)
-        # If we've set a return_to url, go there.
-        if session[:return_to]
-          redirect_to session[:return_to]
-        else
-          redirect_to :action => 'wishlist' and return
-        end
+    @customer = OrderUser.new(params[:customer])
+    if @customer.save(:validate=>true)
+      flash[:notice] = "Your account has been created."
+      log_customer_in(@customer)
+      # If we've set a return_to url, go there.
+      if session[:return_to]
+        redirect_to session[:return_to]
       else
-        flash.now[:notice] = "There was a problem creating your account."
-        render and return
+        redirect_to :action => 'wishlist' and return
       end
-    end    
+    else
+      flash.now[:notice] = "There was a problem creating your account."
+      render and return
+    end
   end
   
   

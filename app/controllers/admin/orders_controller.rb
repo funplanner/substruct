@@ -124,14 +124,11 @@ class Admin::OrdersController < Admin::BaseController
   #
   def totals
     @title = 'Sales Totals'
-    sql = "SELECT DISTINCT YEAR(created_on) as year "
-    sql << "FROM orders "
-    sql << "ORDER BY year ASC"
-    @year_rows = Order.find_by_sql(sql)
+    @year_rows = Order.select('DISTINCT YEAR(created_on) as year').order('year ASC')
     @years = Hash.new
     # Build a hash containing all orders hashed by year.
     for row in @year_rows
-      @years[row.year] = Order.get_totals_for_year(row.year)
+      @years[row.year.to_s] = Order.get_totals_for_year(row.year)
     end
   end
   

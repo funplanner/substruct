@@ -7,6 +7,8 @@ class StoreController < ApplicationController
   include Pagination
   include ActiveMerchant::Billing::Integrations
 
+  @@per_page = 10
+
   before_filter :prep_store_vars
   
   before_filter :redirect_if_order_empty,
@@ -22,7 +24,7 @@ class StoreController < ApplicationController
     ]
   
 
-  if Preference.find_or_create_by_name(:name=>'store_test_transactions', :value=>1).is_true?
+  if Preference.get_value_is_true?('store_test_transactions')
     ActiveMerchant::Billing::Base.integration_mode = :test 
   else
     ActiveMerchant::Billing::Base.integration_mode = :production
@@ -58,7 +60,7 @@ class StoreController < ApplicationController
     if @products.count == 1
       redirect_to :action => 'show', :id => @products[0].code and return
     else
-      render :action => 'index'
+      render :action => 'index.rhtml'
     end
   end
 
@@ -92,14 +94,13 @@ class StoreController < ApplicationController
     
     # Paginate products so we don't have a ton of ugly SQL
     # and conditions in the controller    
-    per_page = 10
     list = Product.find_by_tags(tag_ids_array, true)
-    pager = Paginator.new(list, list.size, per_page, params[:page])
-    @products = WillPaginate::Collection.new(params[:page] || 1, per_page, list.size) do |p|
+    pager = Paginator.new(list, list.size, @@per_page, params[:page])
+    @products = WillPaginate::Collection.new(params[:page] || 1, @@per_page, list.size) do |p|
       p.replace list[pager.current.offset, pager.items_per_page]
     end
     
-    render :action => 'index'
+    render :action => 'index.rhtml'
   end
 
   # This is a component...
@@ -129,7 +130,7 @@ class StoreController < ApplicationController
     @default_image = @images[0]
     @variations = @product.variations.find(
       :all, 
-      :order => 'name ASC',
+      :order => '-variation_rank DESC',
       :conditions => 'quantity > 0'
     )
   end
@@ -137,21 +138,24 @@ class StoreController < ApplicationController
   # Shows shopping cart in pop-up window.
   #
   def show_cart
-    sanitize!
     render :layout => 'modal' and return
   end
 
 
   before_filter :get_product_from_params, :only => [:add_to_cart, :add_to_cart_ajax]
   def add_to_cart
-    sanitize!
-
+    # Saves order in case it's new
+    if @order.new_record?
+      @order.save! 
+      session[:order_id] = @order.id
+    end
+    
     logger.info "QUANTITY: #{@quantity}"
     logger.info "PRODUCT QUANTITY: #{@product.quantity}"
     logger.info "Quantity too much? #{(@quantity.to_i > @product.quantity.to_i)}"
     
     # Checks quantity against available.
-    if (Preference.find_by_name('store_use_inventory_control').is_true? && @quantity > @product.quantity.to_i)
+    if (Preference.get_value_is_true?('store_use_inventory_control') && @quantity > @product.quantity.to_i)
       logger.info "There's an error adding to the cart..."
       respond_to do |format|
         format.html { render(:file => "#{Rails.root}/public/404.html", :status => 404) and return}
@@ -261,7 +265,7 @@ class StoreController < ApplicationController
       @order.save
     end
     
-    if Preference.find_by_name('store_show_confirmation').is_true?
+    if Preference.get_value_is_true?('store_show_confirmation')
       action_after_shipping = 'confirm_order'
     else
       action_after_shipping = 'finish_order'
@@ -348,14 +352,12 @@ class StoreController < ApplicationController
     # Prepares store variables necessary for ordering, etc.
     def prep_store_vars
       # Find or initialize order.
-      @order ||= Order.find(
+      @order = Order.find(
         :first,
         :conditions => ["id = ?", session[:order_id]]
       )
-      unless @order
-        @order = Order.create!
-        session[:order_id] = @order.id
-      end
+      @order ||= Order.new
+      sanitize!
       # Ensure affiliate code is set properly
       @order.affiliate_code = cookies[:affiliate]
     end
@@ -388,6 +390,7 @@ class StoreController < ApplicationController
       if destroy_order then
         @order.destroy
         session[:order_id] = nil
+        @order = Order.new
       end
     end
 
@@ -425,7 +428,7 @@ class StoreController < ApplicationController
       
       # Add cart items to order. Check inventory level first...
       # Now controlled by a preference in the Admin UI
-      if Preference.find_by_name('store_use_inventory_control').is_true?
+      if Preference.get_value_is_true?('store_use_inventory_control')
         removed_items = @order.check_inventory()
         logger.info "REMOVED ITEMS: #{removed_items.inspect}"
         # If any items were removed, flash and alert.
@@ -456,7 +459,6 @@ class StoreController < ApplicationController
       # All went well?
       logger.info("\n\nTRYING TO REDIRECT...")
       redirect_to_shipping and return
-      #
     rescue
       logger.error "\n\nSomething went bad when trying to checkout..."
       stack_trace = $@.join("\n")
@@ -476,17 +478,11 @@ class StoreController < ApplicationController
     
     end
       
-    # When is a cart not a cart?
-    #
-    # When it was cleared without an open browser session.
-    # That's why we sanitize dirty carts.
+    # This removes old orders
     def sanitize! 
-      if session[:order_id]
-         order = Order.find(session[:order_id])
-         if order.order_status_code_id != 1 && order.order_status_code_id != 3
-           clear_cart_and_order(false)
-         end
-      end
+       if @order && @order.order_status_code_id != 1 && @order.order_status_code_id != 3
+         clear_cart_and_order(false)
+       end
     end
 
 end

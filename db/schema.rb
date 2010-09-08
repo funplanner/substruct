@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 10010) do
+ActiveRecord::Schema.define(:version => 20100907220301) do
 
   create_table "affiliate_payments", :force => true do |t|
     t.string   "number"
@@ -42,6 +42,7 @@ ActiveRecord::Schema.define(:version => 10010) do
   end
 
   create_table "content_nodes", :force => true do |t|
+    t.integer  "user_id"
     t.string   "name",       :limit => 200, :default => "", :null => false
     t.string   "title",      :limit => 100, :default => "", :null => false
     t.text     "content"
@@ -68,7 +69,7 @@ ActiveRecord::Schema.define(:version => 10010) do
   end
 
   create_table "items", :force => true do |t|
-    t.string   "code",               :limit => 20,  :default => "",  :null => false
+    t.string   "code",               :limit => 100, :default => "",  :null => false
     t.string   "name",               :limit => 100, :default => "",  :null => false
     t.text     "description"
     t.float    "price",                             :default => 0.0, :null => false
@@ -82,6 +83,7 @@ ActiveRecord::Schema.define(:version => 10010) do
     t.integer  "product_id",                        :default => 0,   :null => false
     t.integer  "is_discontinued",                   :default => 0,   :null => false
     t.integer  "variation_quantity",                :default => 0,   :null => false
+    t.integer  "variation_rank",     :limit => 3
   end
 
   add_index "items", ["date_available", "is_discontinued", "quantity", "variation_quantity", "type"], :name => "tag_view"
@@ -181,11 +183,6 @@ ActiveRecord::Schema.define(:version => 10010) do
   add_index "orders", ["order_number"], :name => "order_number"
   add_index "orders", ["order_status_code_id"], :name => "index_orders_on_order_status_code_id"
   add_index "orders", ["order_user_id"], :name => "order_user_id"
-
-  create_table "plugin_schema_info", :id => false, :force => true do |t|
-    t.string "plugin_name"
-    t.string "version"
-  end
 
   create_table "preferences", :force => true do |t|
     t.string "name",  :default => "", :null => false

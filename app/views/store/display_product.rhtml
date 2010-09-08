@@ -6,7 +6,7 @@
 	<!-- product image -->
 	<%
 		if @image then
-                       image_url = @image.upload.url(:small)
+      image_url = @image.upload.url(:small)
 			if image_url then
 	%>
 			<%= image_tag(image_url, :id => "product_image_#{@product.id}", :align => 'left', :class => 'productImage') %>
@@ -15,20 +15,24 @@
 		end
 	%>
 
-	<%= get_markdown_snippet(@product.description) %>
+	<%= @product.description %>
 
 	<div style="float:right;">
-		<%= link_to_remote 'Add To Cart',
+		<%= 
+		  link_to_remote(
+		    'Add To Cart',
 				{
 	  	  	:url => {
 		        :controller => 'store',
 		        :action => 'add_to_cart_ajax',
-		        :id => @product.id},
+		        :id => @product.id
+		    },
 		    :loading => "Element.show('indicator')",
 				:complete => "Element.hide('indicator');new Effect.Highlight('cart');",
 				:update => 'items'
 				},
-				{ }
+				{}
+			)
 		%>
 	</div>
 	<div class="clear">&nbsp;</div>

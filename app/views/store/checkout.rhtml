@@ -25,7 +25,7 @@
     	<%= render(:partial => '/admin/orders/user') %>
 		</div>
 
-		<% if !@customer && Preference.find_by_name('store_require_login').is_true?  %>
+		<% if !@customer && Preference.get_value_is_true?('store_require_login')  %>
 			<!-- DUPE EMAIL ADDRESS CHECK -->		
 			<% 
 				login_url = url_for(
@@ -40,7 +40,7 @@
 				 * Shows login window when dupe email address is encountered.
 				 */
 				function showLoginWin(email_address) {
-					showPopWin("<%= login_url %>&login="+email_address, 600, 400, returnRefresh);
+					SUBMODAL.show("<%= login_url %>&login="+email_address, 600, 400, returnRefresh);
 				}
 			</script>
 			<%=

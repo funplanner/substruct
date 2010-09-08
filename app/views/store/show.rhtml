@@ -10,7 +10,7 @@
 	<% if @default_image %>
 		<div style="float:left; margin:20px; width: 200px;">
       <% if @default_image.upload.url(:small) then %>
-        <a href="<%= @default_image.upload.url(:small) %>" class="submodal-800-400">
+        <a href="<%= @default_image.upload.url %>" rel="lightbox[product_image]">
           <%= image_tag @default_image.upload.url(:small) %>
         </a>
       <% end %>
@@ -19,10 +19,12 @@
 			<% if @images.size > 1 %>
 				<h4>Other product images</h4>
 				<% for @p_image in @images do %>
-					<!-- product image for reordering -->
+				  <% next if @p_image == @default_image %>
 					<div class="float" style="margin:5px;">
 					  <% if @p_image.upload.url(:thumb) then %>
-              <a href="<%= @p_image.upload.url %>" class="submodal-800-400"><%= image_tag @p_image.upload.url(:thumb) %></a>
+              <a href="<%= @p_image.upload.url %>" 
+                rel="lightbox[product_image]"
+              ><%= image_tag @p_image.upload.url(:thumb) %></a>
             <% end %>
 					</div>
 				<% end %>
@@ -31,7 +33,7 @@
 	<% end %>
 	
 	<div>
-		<%= get_markdown(@product.description) %>
+		<%= @product.description %>
 	</div>
 
 	<div class="clear"></div>
@@ -50,7 +52,7 @@
 	
 	<% 
 		# ITEM IS OUT OF STOCK
-		if (Preference.find_by_name('store_use_inventory_control').is_true? && 0 >= @product.quantity )
+		if (Preference.get_value_is_true?('store_use_inventory_control') && 0 >= @product.quantity )
 	%>
 		<br/>
 		<h3 id="out_of_stock">Item is out of stock</h3>
@@ -63,7 +65,7 @@
 			form_remote_tag(
 				:url=> { :controller=>'store', :action=>'add_to_cart_ajax', :id => @product.id },
 				:html => {:name => 'add_product_form', :id => 'add_to_cart_form'},
-				:complete => "showPopWin('/store/show_cart', 600, 400, null, true)",
+				:complete => "SUBMODAL.show('/store/show_cart', 600, 400, null, true)",
 				:failure => 'alert("That item appears to have gone out of stock before you were able to add it to your cart.\n\nPlease refresh this page.")',
 				:update => 'items'
 			)
@@ -104,7 +106,10 @@
 			</tr>
 		</table>
 		</form>
-	<% end # item in stock %>
+	<%
+	  # item in stock
+	  end
+	%>
 	
 	<div align="center" style="margin-top:10px;">
 		<p>

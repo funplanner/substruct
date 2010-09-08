@@ -4,6 +4,11 @@
 class Admin::ContentNodesController < Admin::BaseController
   include Pagination
   before_filter :set_sections
+
+  verify :method => :post, 
+    :only => [:create, :update, :destroy], 
+    :redirect_to => {:action => :index}
+
   
   def index
     list
@@ -20,6 +25,8 @@ class Admin::ContentNodesController < Admin::BaseController
     # Set currently viewing by key
     if params[:key] then
       @viewing_by = params[:key]
+    else
+      @viewing_by = ContentNode::TYPES[0]
     end
     
     if params[:sort] == 'name' then
@@ -27,22 +34,14 @@ class Admin::ContentNodesController < Admin::BaseController
     else
       sort = "created_on DESC"
     end
-    
-    if @viewing_by
-      @title << " - #{@viewing_by}"
-      @content_nodes = ContentNode.paginate(
-        :order => sort,
-        :page => params[:page],
-        :conditions => ["type = ?", @viewing_by],
-        :per_page => 10
-      )
-    else
-      @content_nodes = ContentNode.paginate(
-        :order => sort,
-        :page => params[:page],
-        :per_page => 10
-      )
-    end
+
+    @title << " - #{@viewing_by}"
+    @content_nodes = ContentNode.paginate(
+      :order => sort,
+      :page => params[:page],
+      :conditions => ["type = ?", @viewing_by],
+      :per_page => 10
+    )
     session[:last_content_list_view] = @viewing_by
   end
   
@@ -87,57 +86,49 @@ class Admin::ContentNodesController < Admin::BaseController
     render :action => 'list'
   end
 
-  # Shows a content node
-  def show
-    @content_node = ContentNode.find(params[:id])
-    @title = "Viewing '#{@content_node.title}'  "
-  end
-
   # Creates a content node
   def new
-    @title = "Creating New Content"
     @content_node = ContentNode.new
-    set_recent_uploads()
+    if params[:type] && ContentNode::TYPES.include?(params[:type])
+      @content_node.type = params[:type]
+    else
+      @content_node.type = 'Blog'
+    end
+    @title = "Creating New #{@content_node.type}"
   end
   
   def edit
-    @title = "Editing Content"
     @content_node = ContentNode.find(params[:id])
-    set_recent_uploads()
+    @title = "Editing #{@content_node.type}"
   end
 
   def create
     @title = "Creating a content node"
     @content_node = ContentNode.new(params[:content_node])
-    @content_node.type = params[:content_node][:type]
+    @content_node.user = @logged_in_user
+    
+    if params[:content_node]
+      @content_node.type = params[:content_node][:type]
+    end
 
     if @content_node.save
-      save_uploads_and_replace_paths()
       flash[:notice] = 'ContentNode was successfully created.'
-      redirect_to :action => 'list'
+      redirect_to :action => 'list', :key => @content_node.type
     else
-      set_recent_uploads
       render :action => 'new'
     end
   end
 
   def update
     @content_node = ContentNode.find(params[:id])
-    @content_node.type = params[:content_node][:type]    
     if @content_node.update_attributes(params[:content_node])
-      save_uploads_and_replace_paths()
-      flash.now[:notice] = 'ContentNode was successfully updated.'
+      flash.now[:notice] = 'Content was successfully updated.'
     else
-      flash.now[:notice] = 'ContentNode was NOT updated. Please check the form below.'
+      flash.now[:notice] = 'Content was NOT updated. Please check the form below.'
     end
-    set_recent_uploads
+    @title = "Editing #{@content_node.type}"
     render :action => 'edit'
   end
-
-	# Shows a preview of our content from the edit / create pages
-	def preview
-		render :layout => false
-	end
 
   def destroy
     ContentNode.find(params[:id]).destroy
@@ -149,41 +140,5 @@ class Admin::ContentNodesController < Admin::BaseController
     #
     def set_sections
       @sections = Section.find_ordered_parents
-    end
-    
-    # Grabs 9 most recent uploads for display in content list.
-    #
-    def set_recent_uploads
-      @recent_uploads = UserUpload.find(
-        :all,
-        :order => 'created_on DESC',
-        :limit => 9
-      )
-    end
-    
-    # Saves uploads for create / update method.
-    # After upload, modifies the content replacing
-    # [fileN] with the real path of the uploaded file.
-    #
-    # This is so we can create content and place files at the same time.
-    #
-    def save_uploads_and_replace_paths()
-      files_saved = 0
-      params[:file].each do |i|
-        if i[:file_data] && !i[:file_data].blank?
-          new_file = UserUpload.init(i[:file_data])
-          if new_file.save!
-            files_saved += 1
-          end
-          @content_node.content = @content_node.content.gsub(
-            "[file#{files_saved}]",
-            new_file.upload.url
-          )
-          #@content_node.content.gsub!("[file#{files_saved}]", new_file.public_filename)
-        end
-      end
-      if files_saved > 0
-        @content_node.save
-      end
     end
 end

@@ -9,9 +9,27 @@
 			h controller.controller_name
 		end
 		-%> : Substruct ADMIN</title>
-	<%= javascript_include_tag :defaults, :cache => 'default' %>
-  <%= javascript_include_tag 'substruct', 'subModal', :plugin => 'substruct', :cache => 'substruct_cache' %>
-	<%= stylesheet_link_tag 'admin', 'subModal', :plugin => 'substruct', :cache => 'substruct_admin' %>
+	<% 
+	  # Have to load javascripts in this order for TinyMCE to work properly.
+	  # Do not use the cache option, as it seems to fuck things up 
+	  # when deployed.
+	%>
+	<%= javascript_include_tag 'prototype' %>
+	<%= javascript_include_tag 'tiny_mce/tiny_mce', :plugin => 'substruct' %>
+	<%= javascript_include_tag 'effects', 'dragdrop', 'controls' %>
+	<%= javascript_include_tag 'lightbox', :plugin => 'substruct' %>
+  <%= 
+    javascript_include_tag(
+      'mce_init', 'substruct', 'subModal', 
+      :plugin => 'substruct'
+    )
+  %>
+	<%= 
+	  stylesheet_link_tag(
+	    'admin', 'subModal', 'lightbox', 
+	    :plugin => 'substruct'
+	  )
+	%>
 	<%= yield :header %>
 </head>
 <body>
@@ -45,6 +63,9 @@
 			<li class="<%= @cname == 'products' ? 'active' : '' %>">
 				<%= link_to_section "Products", :controller=>"/admin/products" rescue nil %>
 			</li>
+			<li class="<%= ['content_nodes', 'files'].include?(@cname) ? 'active' : '' %>">
+				<%= link_to_section "Content", :controller=>"/admin/content_nodes" rescue nil %>
+			</li>
 			<li class="<%= (@cname == 'affiliates') ? 'active' : '' %>">
 				<%= link_to_section "Affiliates", :controller=>"/admin/affiliates" rescue nil %>
 			</li>
@@ -54,14 +75,13 @@
 			<li class="<%= @cname == 'questions' ? 'active' : '' %>">
 				<%= link_to_section "FAQ", :controller=>"/admin/questions" rescue nil %>
 			</li>
-			<li class="<%= @cname == 'content_nodes' ? 'active' : '' %>">
-				<%= link_to_section "Content", :controller=>"/admin/content_nodes" rescue nil %>
-			</li>
-			<li class="<%= @cname == 'files' ? 'active' : '' %>">
-				<%= link_to_section "Files", :controller=>"/admin/files" rescue nil %>
-			</li>
+
 		  <li class="<%= (@cname == 'users' || @cname == 'customers') ? 'active' : '' %>">
 				<%= link_to_section "Users", :controller=>"/admin/users" rescue nil %>
+			</li>
+			
+			<li class="<%= (['preferences', 'tags', 'sections', 'roles'].include?(@cname)) ? 'active' : '' %>">
+				<%= link_to_section "Preferences", :controller=>"/admin/preferences" rescue nil %>
 			</li>
 		</ul>
 	</div>
@@ -71,10 +91,9 @@
 			<div style="margin-bottom:10px;">
 			  <span style="text-transform:capitalize;"><%= current_user_notice rescue nil %></span>
 			  <br/>
-			  <span class="user_id"><%=h User.find(session[:user]).login %> - <%=h request.env["SERVER_NAME"] %></span>
+			  <span class="user_id"><%=h @logged_in_user.login %> - <%=h request.env["SERVER_NAME"] %></span>
 			</div>
 			<a href="/">Public site</a> -
-			<a href="/admin/preferences/">Preferences</a> - 
 			<a href="http://code.google.com/p/substruct/wiki/HelpOverview" class="submodal-800-600">Online Help</a> -
 			<a href="http://dev.subimage.com/projects/substruct/">About Substruct</a>
 		</div>

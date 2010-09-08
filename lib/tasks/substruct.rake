@@ -90,21 +90,10 @@ namespace :substruct do
         environment
         db:migrate:reset 
         substruct:db:load_authority_data
+        substruct:db:init_migration_versions
         tmp:create
       ).each { |t| Rake::Task[t].execute task_args}
-      
-      
-      # We have to set the proper plugin schema migration,
-      # because loading from bootstrap doesn't do it.
-      #
-      # Grab current schema version from the migration scripts.
-      schema_files = Dir.glob(File.join(Rails.root, 'vendor/plugins/substruct/db/migrate', '*'))
-      schema_version = File.basename(schema_files.sort.last).to_i
-      ActiveRecord::Base.connection.execute(%Q\
-        INSERT INTO plugin_schema_info
-        VALUES('substruct', #{schema_version});
-      \)
-      
+            
       puts '=' * 80
       puts
       puts "Thanks for trying Substruct #{Substruct::Version::STRING}"
@@ -122,6 +111,34 @@ namespace :substruct do
       puts 
 
     end # bootstrap
+    
+    desc %q\
+    Ensures the schema_migrations table is set up properly so
+    we can run migrations against substruct.
+    \
+    task :init_migration_versions => :environment do
+      puts "Rubyjedi's Rails3 Fork WARNING: substruct:db:init_migration_versions does not apply to this fork's Migrations."
+###
+# substruct:db:init_migration_versions is DISABLED in this Rails3 Fork
+# because we blew away the Database Migrations in favor of a fresh set of Migrations!
+###
+#      # First remove any references to substruct so we don't have dupes.
+#      puts "Removing older migration entries"
+#      ActiveRecord::Base.connection.execute(%Q\
+#        DELETE from schema_migrations
+#        WHERE version LIKE "%-substruct"
+#      \)
+#      # Grab current schema version from the migration scripts.
+#      puts "Initializing migration version numbers"
+#      schema_files = Dir.glob(File.join(RAILS_ROOT, 'vendor/plugins/substruct/db/migrate', '*'))
+#      schema_version = File.basename(schema_files.sort.last).to_i
+#      (1..schema_version).each do |v|
+#        ActiveRecord::Base.connection.execute(%Q\
+#          INSERT INTO schema_migrations
+#          VALUES('#{v}-substruct');
+#        \)
+#      end
+    end 
     
     desc %q\
     Dump authority data to YML files.
@@ -212,14 +229,10 @@ namespace :substruct do
       FileUtils.cp(File.join(ss_dir, 'config', 'environment.rb'), config_dir)
       FileUtils.cp(File.join(ss_dir, 'config', 'database.yml'), config_dir)
       
-      # application.rb
+      # application_controller.rb
       # necessary to include substruct engine before filters
       app_rb = File.join(ss_dir, 'config', 'application.rb.example')
-      FileUtils.cp(app_rb, File.join(tmp_dir, 'app', 'controllers', 'application.rb'))
-
-      # Insert standard substruct routes into default routes.rb
-      routes = File.read(File.join(config_dir, 'routes.rb'))
-      File.open(File.join(config_dir, 'routes.rb'), 'wb') { |f| f.write(routes.to_a.insert(1, "  map.from_plugin :substruct\n\n")) }
+      FileUtils.cp(app_rb, File.join(tmp_dir, 'app', 'controllers', 'application_controller.rb'))
       
       # touch loading.html - necessary for submodal
       FileUtils.touch(File.join(tmp_dir, 'public', 'loading.html'))

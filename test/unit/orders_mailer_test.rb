@@ -95,9 +95,10 @@ class OrdersMailerTest < ActionMailer::TestCase
     
     assert_equal response_mail.subject, 'An order has failed on the site'
     assert_match /Order #: #{an_order.order_number}/, response_mail.body
-    assert_equal response_mail.to.to_a, Preference.find_by_name('mail_copy_to').value.split(',')
-    
-    assert_equal initial_mbox_length + 1, ActionMailer::Base.deliveries.length
+    assert_equal(
+      response_mail.to.to_a, 
+      Preference.get_value('mail_copy_to').split(',')
+    )
   end
 
 
@@ -110,7 +111,10 @@ class OrdersMailerTest < ActionMailer::TestCase
     
     response_mail = OrdersMailer.reset_password(an_order_user)
 
-    assert_equal response_mail.subject, "Password reset for #{Preference.find_by_name('store_name').value}"
+    assert_equal(
+      response_mail.subject, 
+      "Password reset for #{Preference.get_value('store_name')}"
+    )
     assert_match /Your password has been reset/, response_mail.body
     assert_equal response_mail.to.to_a, [an_order_user.email_address]
 

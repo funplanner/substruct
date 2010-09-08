@@ -300,19 +300,28 @@ class OrderTest < ActiveSupport::TestCase
   # ensures we remove them all when removing a promotion.
   def test_remove_promotion_multiple_items
     setup_new_order_with_items()
-    promo = promotions(:fixed_rebate)
-    @o.promotion_code = promo.code
-    assert @o.save
-    assert_kind_of OrderLineItem, @o.promotion_line_item
-    # Add dupe line item.
-    dupe_item = @o.promotion_line_item.clone
-    @o.order_line_items << dupe_item
-    assert_equal 2, @o.order_line_items.count(
-      :conditions => ["name = ?", @o.promotion.description]
-    )
-    # Remove
-    @o.remove_promotion()
-    assert_nil @o.promotion_line_item
+    editable_order_codes = (1..5)
+    editable_order_codes.each do |status_id|
+      o_status = OrderStatusCode.find(status_id)
+      assert_kind_of OrderStatusCode, o_status
+
+      @o.order_status_code = o_status
+      assert @o.is_editable?
+      
+      promo = promotions(:fixed_rebate)
+      @o.promotion_code = promo.code
+      assert @o.save
+      assert_kind_of OrderLineItem, @o.promotion_line_item
+      # Add dupe line item.
+      dupe_item = @o.promotion_line_item.clone
+      @o.order_line_items << dupe_item
+      assert_equal 2, @o.order_line_items.count(
+        :conditions => ["name = ?", @o.promotion.description]
+      )
+      # Remove
+      @o.remove_promotion()
+      assert_nil @o.promotion_line_item
+    end
   end
   
   def test_should_promotion_be_applied_expired
@@ -667,7 +676,10 @@ class OrderTest < ActiveSupport::TestCase
   # Test an order to see if a flat shipping price will be returned.
   # TODO: Should this method really be here?
   def test_get_flat_shipping_price
-    assert_equal @order.get_flat_shipping_price, Preference.find_by_name('store_handling_fee').value.to_f
+    assert_equal(
+      @order.get_flat_shipping_price, 
+      Preference.get_value('store_handling_fee').to_f
+    )
   end
   
   # Test an order to see if the correct shipping prices will be returned.
@@ -717,14 +729,20 @@ class OrderTest < ActiveSupport::TestCase
   # Test an order to see if the cc processor will be returned.
   def test_get_cc_processor
     # TODO: Should this method really be here?
-    assert_equal Order.get_cc_processor, Preference.find_by_name('cc_processor').value.to_s
+    assert_equal(
+      Order.get_cc_processor, 
+      Preference.get_value('cc_processor').to_s
+    )
   end
 
 
   # Test an order to see if the cc login will be returned.
   def test_get_cc_login
     # TODO: Should this method really be here?
-    assert_equal Order.get_cc_login, Preference.find_by_name('cc_login').value.to_s
+    assert_equal(
+      Order.get_cc_login, 
+      Preference.get_value('cc_login').to_s
+    )
   end
 
 
@@ -852,9 +870,9 @@ class OrderTest < ActiveSupport::TestCase
     assert @o.save
 
     # Make sure inventory control is enabled.
-    assert Preference.find_by_name('store_use_inventory_control').is_true?
+    assert Preference.get_value_is_true?('store_use_inventory_control')
     # Make sure cc number obfuscation is enabled.
-    assert Preference.find_by_name('cc_clear_after_order').is_true?
+    assert Preference.get_value_is_true?('cc_clear_after_order')
     
     initial_quantity = @li.item.quantity
     notes_before = @o.notes.clone
@@ -1302,15 +1320,58 @@ class OrderTest < ActiveSupport::TestCase
   end
   
   def test_is_payable_to_affiliate
-    @order.expects(:order_status_code_id).times(8).returns(1,2,3,4,5,6,7,8)
-    assert !@order.is_payable_to_affiliate?
-    assert !@order.is_payable_to_affiliate?
-    assert !@order.is_payable_to_affiliate?
-    assert !@order.is_payable_to_affiliate?
-    assert !@order.is_payable_to_affiliate?
-    assert @order.is_payable_to_affiliate?
-    assert @order.is_payable_to_affiliate?
-    assert !@order.is_payable_to_affiliate?
+    payable_statuses = [
+      order_status_codes(:ordered_paid_shipped),
+      order_status_codes(:sent_to_fulfillment)
+    ]
+    OrderStatusCode.find(:all).each do |stat|
+      @order.order_status_code = stat
+      
+      assert_equal(
+        payable_statuses.include?(stat),
+        @order.is_payable_to_affiliate?,
+        "Fail for #{stat.inspect}"
+      )
+    end
+  end
+  
+  def test_is_complete
+    complete_statuses = [
+      order_status_codes(:ordered_paid_to_ship), 
+      order_status_codes(:ordered_paid_shipped), 
+      order_status_codes(:sent_to_fulfillment), 
+      order_status_codes(:cancelled), 
+      order_status_codes(:returned)
+    ]
+    OrderStatusCode.find(:all).each do |stat|
+      @order.order_status_code = stat
+      
+      assert_equal(
+        complete_statuses.include?(stat),
+        @order.is_complete?,
+        "Fail for #{stat.inspect}"
+      )
+    end
+  end
+
+  # Test if the right status codes will be shown as editable.
+  def test_is_editable_success
+    editable_statuses = [
+      order_status_codes(:cart), 
+      order_status_codes(:to_charge), 
+      order_status_codes(:on_hold_payment_failed),
+      order_status_codes(:on_hold_awaiting_payment), 
+      order_status_codes(:ordered_paid_to_ship)
+    ]
+    OrderStatusCode.find(:all).each do |stat|
+      @order.order_status_code = stat
+      
+      assert_equal(
+        editable_statuses.include?(stat),
+        @order.is_editable?,
+        "Fail for #{stat.inspect}"
+      )
+    end
   end
 
   # Test if will return the tax cost for the total in the cart.

@@ -40,16 +40,16 @@ class ContentNodesControllerTest < ActionController::TestCase
     assert_equal assigns(:title), a_content_node.title
     assert_template 'content_nodes/blog_post'
     assert_not_nil assigns(:content_node)
-    
     # Assert the content node is being shown.
     assert_select "p", :count => 1, :text => /According to the creator of/
-
-    # Now using an invalid name.
+  end
+  
+  def test_show_by_content_invalid_name
     get :show_by_name, :name => "bleargh"
     assert_response :missing
   end
   
-  
+
   # Test the show snippet action.
   def test_snippet
     # Now using a snippet.
@@ -57,9 +57,8 @@ class ContentNodesControllerTest < ActionController::TestCase
     
     get :show_snippet, :name => a_content_node.name
     assert_response :success
-    assert_template 'content_nodes/show_snippet'
-    assert_not_nil assigns(:content_node)
-    
+
+    assert_not_nil assigns(:content_node)    
     # Assert the content node is being shown.
     assert_select "p", :count => 1, :text => /You will be billed via credit card./
   end
@@ -97,6 +96,7 @@ class ContentNodesControllerTest < ActionController::TestCase
     assert_not_nil assigns(:content_nodes)
     
     # Assert the blog posts are being shown.
+    assert assigns(:sections).size > 0
     assert_select "a", :count => 1, :text => content_nodes(:pigasus_awards).title
     assert_select "a", :count => 1, :text => content_nodes(:silent_birth).title
 

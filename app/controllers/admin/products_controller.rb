@@ -20,11 +20,6 @@ class Admin::ProductsController < Admin::BaseController
       :per_page => 30
     )
   end
-  
-  # Shows all tags in system and lets user list products by tag.
-  def list_tags
-    
-  end
 
 	# Lists products by tag
   def list_by_tags
@@ -45,7 +40,7 @@ class Admin::ProductsController < Admin::BaseController
 			return
     end
 
-    @title = "Product List For Tag - '#{@tag.name}'"
+    @title = "Tag - #{@tag.name}"
 
     conditions = nil
 
@@ -224,7 +219,9 @@ class Admin::ProductsController < Admin::BaseController
 	  @variation = Variation.new
 	  # Set random ID so that we can reference things from JS...
 	  @variation.id = Time.now.to_i
-	  render(:update) { |page| page.insert_html :bottom, 'variation_container', :partial => 'variation', :locals=> { :variation=>@variation } }
+	  render(:update) do |page| 
+	    page.insert_html :bottom, 'variation_container', :partial => 'variation', :locals => {:variation => @variation}
+	  end
   end
 	
 	# Called for actually removing a variation if found, or just returns
@@ -260,13 +257,13 @@ class Admin::ProductsController < Admin::BaseController
   # Removes an image from the system
   def remove_image_ajax
     Image.find_by_id(params[:id]).destroy()
-    render :text=>"", :layout=>false
+    render :text => "", :layout => false
   end
   
   # Removes a download
   def remove_download_ajax
     Download.find_by_id(params[:id]).destroy()
-    render :text=>"", :layout=>false
+    render :text => "", :layout => false
   end
 end
 

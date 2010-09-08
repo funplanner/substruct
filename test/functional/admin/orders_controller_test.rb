@@ -5,11 +5,13 @@ require File.expand_path(File.dirname(__FILE__) + '/../../test_helper')
 
 class Admin::OrdersControllerTest < ActionController::TestCase
   fixtures :all
+
+  def setup
+    login_as :admin
+  end
   
   # Test the index action.
   def test_show_index
-    login_as :admin
-
     get :index
     assert_response :success
     assert_template 'list'
@@ -18,8 +20,6 @@ class Admin::OrdersControllerTest < ActionController::TestCase
 
   # Test the list action.
   def test_show_list
-    login_as :admin
-
     # Call it first without a key, it will use the first value of list_options array.
     get :list
     assert_response :success
@@ -27,8 +27,9 @@ class Admin::OrdersControllerTest < ActionController::TestCase
     assert_equal assigns(:title), "Order List"
     assert_not_nil assigns(:orders)
     assert_select "td", :count => 1, :text => "ORDERED - PAID - TO SHIP"
-    
-    # Now call it again with a key.
+  end
+  
+  def test_list_key_on_hold_and_remembers
     get :list, :key => "On Hold"
     assert_response :success
     assert_template 'list'
@@ -43,7 +44,9 @@ class Admin::OrdersControllerTest < ActionController::TestCase
     assert_equal assigns(:title), "Order List"
     assert_not_nil assigns(:orders)
     assert_select "td", :count => 2, :text => /ON HOLD/
+  end
 
+  def test_list_key_completed
     # Now call it again with a key.
     get :list, :key => "Completed"
     assert_response :success
@@ -52,7 +55,9 @@ class Admin::OrdersControllerTest < ActionController::TestCase
     assert assigns(:orders)
     assert_select "td", :count => 2, :text => /ORDERED - PAID/
     assert_select "td", :count => 1, :text => /SENT TO FULFILLMENT/
+  end
 
+  def test_list_key_all
     # Now call it again with a key.
     get :list, :key => "All"
     assert_response :success
@@ -65,15 +70,13 @@ class Admin::OrdersControllerTest < ActionController::TestCase
 
   # We should get a list of orders searching by name or number.
   def test_search
-    login_as :admin
-
     a_term = "santa"
 
     # Search using a term.
     get :search, :term => a_term
     assert_response :success
     assert_equal assigns(:title), "Search Results"
-    assert_select "h2", :text => "You Searched For '#{a_term}'"
+    assert_select "h1", :text => "You Searched For '#{a_term}'"
     assert_equal assigns(:search_count), 9
     assert assigns(:orders)
     assert_template 'list'
@@ -81,21 +84,19 @@ class Admin::OrdersControllerTest < ActionController::TestCase
     # Now without a term, it should remember the last.
     get :search
     assert_response :success
-    assert_select "h2", :text => "You Searched For '#{a_term}'"
+    assert_select "h1", :text => "You Searched For '#{a_term}'"
   end
 
 
   # We should get a list of orders searching by e-mail.
   def test_search_by_email
-    login_as :admin
-
     a_term = "whoknowswhere"
 
     # Search using a term.
     get :search_by_email, :term => a_term
     assert_response :success
     assert_equal assigns(:title), "Search Results"
-    assert_select "h2", :text => "You Searched For '#{a_term}'"
+    assert_select "h1", :text => "You Searched For '#{a_term}'"
     assert_select "a", :count => 9, :text => /Santa Claus/
     assert assigns(:orders)
     assert_template 'list'
@@ -103,21 +104,19 @@ class Admin::OrdersControllerTest < ActionController::TestCase
     # Now without a term, it should remember the last.
     get :search_by_email
     assert_response :success
-    assert_select "h2", :text => "You Searched For '#{a_term}'"
+    assert_select "h1", :text => "You Searched For '#{a_term}'"
   end
 
 
   # We should get a list of orders searching by notes.
   def test_search_by_notes
-    login_as :admin
-
     a_term = "Order failed"
 
     # Search using a term.
     get :search_by_notes, :term => a_term
     assert_response :success
     assert_equal assigns(:title), "Search Results"
-    assert_select "h2", :text => "You Searched For '#{a_term}'"
+    assert_select "h1", :text => "You Searched For '#{a_term}'"
     assert_select "a", :count => 1, :text => /Santa Claus/
     assert assigns(:orders)
     assert_template 'list'
@@ -125,14 +124,12 @@ class Admin::OrdersControllerTest < ActionController::TestCase
     # Now without a term, it should remember the last.
     get :search_by_notes
     assert_response :success
-    assert_select "h2", :text => "You Searched For '#{a_term}'"
+    assert_select "h1", :text => "You Searched For '#{a_term}'"
   end
 
 
   # Test if the sales totals by year will be generated. 
   def test_get_sales_totals
-    login_as :admin
-
     get :totals
     assert_response :success
     assert_template 'totals'
@@ -166,8 +163,6 @@ class Admin::OrdersControllerTest < ActionController::TestCase
 
   # We should get a list of orders by country.
   def test_get_orders_by_country
-    login_as :admin
-
     get :by_country
     assert_response :success
     assert_equal assigns(:title), "Orders By Country"
@@ -180,8 +175,6 @@ class Admin::OrdersControllerTest < ActionController::TestCase
 
   # We should get a list of orders for a specific country.
   def test_get_orders_for_country
-    login_as :admin
-
     a_country = countries(:US)
 
     get :for_country, :id => a_country.id
@@ -199,7 +192,6 @@ class Admin::OrdersControllerTest < ActionController::TestCase
 
   # Mocks viewing an order that hasn't gone past the checkout stage.
   def test_show_cart_order
-    login_as :admin
     order = Order.create
     get :show, :id => order.id
     assert_response :success
@@ -210,8 +202,6 @@ class Admin::OrdersControllerTest < ActionController::TestCase
   # TODO: The @products array is not being used.
   # May exist others orders that uses the same record.
   def test_allow_edit_order
-    login_as :admin
-
     an_order = orders(:santa_next_christmas_order)
     an_order_shipping_type = order_shipping_types(:ups_ground)
     an_order_status_code = order_status_codes(:ordered_paid_shipped)
@@ -219,7 +209,7 @@ class Admin::OrdersControllerTest < ActionController::TestCase
     # Call the show form.
     get :show, :id => an_order.id
     assert_response :success
-    assert_template 'edit' if an_order.order_status_code.is_editable?
+    assert_template 'edit' if an_order.is_editable?
 
     old_email_address = an_order.order_user.email_address
     
@@ -286,14 +276,12 @@ class Admin::OrdersControllerTest < ActionController::TestCase
 
   # Should NOT change the order attributes.
   def test_not_allow_edit_wrong_order
-    login_as :admin
-
     an_order = orders(:santa_next_christmas_order)
 
     # Call the show form.
     get :show, :id => an_order.id
     assert_response :success
-    assert_template 'edit' if an_order.order_status_code.is_editable?
+    assert_template 'edit' if an_order.is_editable?
 
     # Stub the Order.order_user method (called by update_order_from_post from inside a module) to raise an exception.
     Order.any_instance.expects(:order_user).raises('An error!')
@@ -323,8 +311,6 @@ class Admin::OrdersControllerTest < ActionController::TestCase
 
   # Test if an order can be marked as returned.
   def test_return_order
-    login_as :admin
-
     an_order = orders(:santa_next_christmas_order)
 
     # Call the resend_receipt action.
@@ -342,8 +328,6 @@ class Admin::OrdersControllerTest < ActionController::TestCase
 
   # Test if a receipt message will be sent again.
   def test_resend_receipt
-    login_as :admin
-
     # Setup the mailer.
     ActionMailer::Base.delivery_method = :test
     ActionMailer::Base.perform_deliveries = true
@@ -362,12 +346,28 @@ class Admin::OrdersControllerTest < ActionController::TestCase
     # We should have received a mail about that.
     assert_equal ActionMailer::Base.deliveries.length, initial_mbox_length + 1
   end
-
+  
+  def test_view_receipt_success
+    complete_order = orders(:santa_next_christmas_order)
+    assert complete_order.is_complete?
+    
+    get :show_receipt, :id => complete_order
+    assert_response :success
+    # assert_layout "receipt"
+    assert_template "store/finish_order"
+  end
+  
+  def test_view_receipt_failure
+    incomplete_order = orders(:an_order_on_cart)
+    assert !incomplete_order.is_complete?
+    
+    get :show_receipt, :id => incomplete_order
+    assert_redirected_to :action => 'show', :id => incomplete_order
+    assert !flash[:notice].blank?
+  end
 
   # Test if we can remove an order.
   def test_remove_order
-    login_as :admin
-
     an_order = orders(:santa_next_christmas_order)
     an_order_line_item = an_order.order_line_items.find(:first)
 
@@ -387,18 +387,14 @@ class Admin::OrdersControllerTest < ActionController::TestCase
 
   # Test if we can download an order list.
   def test_download_orders_csv
-    login_as :admin
-    
     ids_array = Order.find(:all).collect {|p| p.id}
-
-
-    # Test the CSV file download.
 
     # Call the download action.
     get :download, :format => "csv", :ids => ids_array
     assert_response :success
-    assert_equal @response.headers['Content-Type'], "text/csv"
-    
+
+    assert_response_csv
+        
     # Create a regular expression.
     re = %r{\d{2}_\d{2}_\d{4}_\d{2}-\d{2}[.]csv}
     # See if it matches Content-Disposition, and create a MatchData object.
@@ -413,15 +409,17 @@ class Admin::OrdersControllerTest < ActionController::TestCase
     if was_created
       FileUtils.remove_file(file)
     end
+  end
 
-
-    # Test the XML file download.
-
+  def test_download_orders_xml
+    ids_array = Order.find(:all).collect {|p| p.id}
+    
     # Call the download action.
     get :download, :format => "xml", :ids => ids_array
     assert_response :success
 
-    assert_equal @response.headers['Content-Type'], "text/xml"
+    #assert_equal 'text/xml', @response.headers['Content-Type']
+    assert_response_xml
     
     # Create a regular expression.
     re = %r{\d{2}_\d{2}_\d{4}_\d{2}-\d{2}[.]xml}

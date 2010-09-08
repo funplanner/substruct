@@ -34,7 +34,11 @@ class ContentNodesController < ApplicationController
   # Shows a snippet of content
   def show_snippet
     @content_node = Snippet.find(:first, :conditions => ["name = ?", params[:name]])
-    render(:layout => false)
+    if @content_node
+      render :text => @content_node.content, :layout => false and return
+    else
+      render :text => '', :layout => false and return
+    end
   end
 
   # Shows all blog content nodes.
@@ -63,7 +67,7 @@ class ContentNodesController < ApplicationController
       :page => params[:page],
       :per_page => 5
     )
-    render :action => 'index' and return
+    render :action => 'index.rhtml' and return
   end
 
   private

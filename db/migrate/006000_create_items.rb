@@ -4,7 +4,7 @@
 class CreateItems < ActiveRecord::Migration
   def self.up
     create_table :items, :force => true do |t|
-      t.string   :code,               :limit => 20,  :default => "",    :null => false
+      t.string   :code,               :limit => 100,  :default => "",    :null => false
       t.string   :name,               :limit => 100, :default => "",    :null => false
       t.text     :description
       t.float    :price,                             :default => 0.0,   :null => false
@@ -18,6 +18,7 @@ class CreateItems < ActiveRecord::Migration
       t.integer  :product_id,         :limit => 11,  :default => 0,     :null => false
       t.integer  :is_discontinued,                   :default => false, :null => false
       t.integer  :variation_quantity, :limit => 11,  :default => 0,     :null => false
+      t.integer  :variation_rank,     :limit => 3
     end
     add_index "items", ["quantity", "is_discontinued", "variation_quantity"], :name => "published"
     add_index "items", ["product_id", "type"], :name => "variation"

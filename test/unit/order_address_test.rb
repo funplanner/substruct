@@ -103,19 +103,7 @@ class OrderAddressTest < ActiveSupport::TestCase
     assert ERROR_EMPTY, an_address.errors[:last_name].any? ## FIXME: Why are validations pushing DUPLICATE messages into errors[] ?
     assert ERROR_EMPTY, an_address.errors[:address].any? ## FIXME: Why are validations pushing DUPLICATE messages into errors[] ?
 
-    an_address.address = "P.O. BOX"
-    assert !an_address.valid?
-    assert "Sorry, we don't ship to P.O. boxes", an_address.errors[:address].any? ## FIXME: Why are validations pushing DUPLICATE messages into errors[] ? 
     
-#    TODO: The address is being saved even when not associated with an user or a country.
-#    an_address.first_name = "Colonel"
-#    an_address.last_name = "Mustard"
-#    an_address.telephone = "000000000"
-#    an_address.address = "After Boddy Mansion at right"
-#    an_address.zip = "00000"
-
-#    TODO: Why try to validate P. O. Boxes?
-
     assert !an_address.save
   end
 

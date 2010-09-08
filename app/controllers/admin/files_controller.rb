@@ -3,39 +3,27 @@
 # See /RUBYJEDI.txt for Licensing and Distribution Terms
 class Admin::FilesController < Admin::BaseController
 
+  verify :method => :post, 
+    :only => [:upload], 
+    :render => {:text => "Uploading files can happen from a HTTP post only."}
+
+
   # Lists all assets / file uploads in the system.
   def index
-    @title = "List of user uploaded files"
-    
-    if params[:sort] == 'name' then
-      sort = "upload_file_name ASC"
-    else
-      sort = "created_on DESC"
-    end
-    
-    # Set currently viewing by key
-    if params[:key] then
-      @viewing_by = params[:key]
-      @title << " - #{@viewing_by.pluralize}"    
-      @files = UserUpload.paginate(
-        :order => sort,
-        :page => params[:page],
-        :conditions => ["type = ?", @viewing_by],
-        :per_page => 30
-      )
-    else
-      @files = UserUpload.paginate(
-        :order => sort,
-        :page => params[:page],
-        # :conditions => "thumbnail is NULL", ## FIXME: Maybe reintroduce this as :conditions=>"type != 'Image' ? ##
-        :per_page => 30
-      )
-    end
-
+    @title = "User uploaded files"
+    get_files(params)
+  end
+  
+  # Shows a screen where we can pick images to insert into our
+  # TinyMCE editors - for ContentNode editing.
+  def image_library
+    @title = "Insert image"
+    # Only interested in images
+    get_files(params.merge({:key => 'Image'}))
+    render :layout => 'admin_modal'
   end
   
   # Removes a file via AJAX
-  #
   def destroy
     @file = UserUpload.find(params[:id])
     if @file
@@ -45,8 +33,7 @@ class Admin::FilesController < Admin::BaseController
     render :text => "" and return
   end
   
-  # Uploads files.
-  #
+  # Uploads files from main files screen
   def upload
     files_saved = 0
     # Build product images from upload
@@ -58,8 +45,43 @@ class Admin::FilesController < Admin::BaseController
         end
       end
     end
+    
     flash[:notice] = "#{files_saved} file(s) uploaded."
-    redirect_to :action => 'index' and return
+    
+    if params[:modal]
+      redirect_to :action => 'image_library' and return
+    else
+      redirect_to :action => 'index' and return
+    end
   end
   
+  
+  private
+    # Gets file list for index and tinymce_library
+    def get_files(params)
+      if params[:sort] == 'name' then
+        sort = "upload_file_name ASC"
+      else
+        sort = "created_on DESC"
+      end
+
+      # Set currently viewing by key
+      if params[:key] then
+        @viewing_by = params[:key]
+        @title << " - #{@viewing_by.pluralize}"    
+        @files = UserUpload.paginate(
+          :order => sort,
+          :page => params[:page],
+          :conditions => ["type = ?", @viewing_by], #  and thumbnail is NULL
+          :per_page => 30
+        )
+      else
+        @files = UserUpload.paginate(
+          :order => sort,
+          :page => params[:page],
+          # :conditions => "thumbnail is NULL",
+          :per_page => 30
+        )
+      end
+    end
 end

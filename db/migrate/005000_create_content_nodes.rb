@@ -4,6 +4,7 @@
 class CreateContentNodes < ActiveRecord::Migration
   def self.up
     create_table :content_nodes, :force => true do |t|
+      t.integer  :user_id
       t.string   :name,       :limit => 200, :default => "", :null => false
       t.string   :title,      :limit => 100, :default => "", :null => false
       t.text     :content
